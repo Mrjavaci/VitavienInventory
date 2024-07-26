@@ -1,0 +1,7 @@
+{
+    "System": true,
+    "Stock": true,
+    "Branch": true,
+    "WareHouse": true,
+    "Inventory": true
+}

@@ -102,12 +102,12 @@ return [
         */
         'generator' => [
             'config' => ['path' => 'config', 'generate' => true],
-            'command' => ['path' => 'App/Console', 'generate' => false],
+            'command' => ['path' => 'App/Console', 'generate' => true],
             'channels' => ['path' => 'App/Broadcasting', 'generate' => false],
-            'migration' => ['path' => 'Database/migrations', 'generate' => false],
+            'migration' => ['path' => 'Database/migrations', 'generate' => true],
             'seeder' => ['path' => 'Database/Seeders', 'generate' => true],
             'factory' => ['path' => 'Database/Factories', 'generate' => false],
-            'model' => ['path' => 'App/Models', 'generate' => false],
+            'model' => ['path' => 'App/Models', 'generate' => true],
             'observer' => ['path' => 'App/Observers', 'generate' => false],
             'routes' => ['path' => 'routes', 'generate' => true],
             'controller' => ['path' => 'App/Http/Controllers', 'generate' => true],

@@ -1,0 +1,11 @@
+{
+    "name": "WareHouse",
+    "alias": "warehouse",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\WareHouse\\App\\Providers\\WareHouseServiceProvider"
+    ],
+    "files": []
+}
