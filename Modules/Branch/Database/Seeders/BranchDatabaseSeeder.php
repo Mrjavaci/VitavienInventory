@@ -12,6 +12,7 @@ class BranchDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         Branch::query()->create([
             'name'    => 'Main Branch',
             'address' => 'Main Branch Address',
