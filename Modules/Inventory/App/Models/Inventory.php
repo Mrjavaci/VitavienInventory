@@ -17,6 +17,8 @@ class Inventory extends Model
 
     protected $table = 'inventory';
 
+    protected $with = ['stock'];
+
     protected static function boot()
     {
         parent::boot();
