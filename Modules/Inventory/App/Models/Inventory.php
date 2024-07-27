@@ -23,7 +23,7 @@ class Inventory extends Model
     {
         parent::boot();
         static::retrieved(function (Inventory $inventory) {
-            $inventory->baseInventory = self::getBaseInventory($inventory);
+         //   $inventory->baseInventory = self::getBaseInventory($inventory);
         });
     }
 
