@@ -18,9 +18,8 @@
     "autoload": {
         "psr-4": {
             "Modules\\Branch\\": "",
-            "Modules\\Branch\\App\\": "app/",
-            "Modules\\Branch\\Database\\Factories\\": "database/factories/",
-            "Modules\\Branch\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\Branch\\App\\": "App/",
+            "Modules\\Branch\\Database\\Seeders\\": "Database/Seeders/"
         }
     },
     "autoload-dev": {
