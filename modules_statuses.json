@@ -3,5 +3,6 @@
     "Stock": true,
     "Branch": true,
     "WareHouse": true,
-    "Inventory": true
+    "Inventory": true,
+    "User": true
 }
