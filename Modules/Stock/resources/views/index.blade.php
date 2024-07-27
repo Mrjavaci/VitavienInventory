@@ -1,7 +1,15 @@
-@extends('stock::layouts.master')
+@extends("adminlte3.layouts.app")
 
-@section('content')
-    <h1>Hello World</h1>
+@pushOnce('css')
+    <style></style>
+@endpushonce
+@section('title', "Adminlte3")
+@section("content")
 
-    <p>Module: {!! config('stock.name') !!}</p>
+    Test
+
 @endsection
+
+@pushOnce('scripts')
+    <script></script>
+@endpushonce

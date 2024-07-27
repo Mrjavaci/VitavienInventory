@@ -15,5 +15,8 @@ use Modules\Stock\App\Http\Controllers\StockController;
 */
 
 Route::group([], function () {
-    Route::resource('stock', StockController::class)->names('stock');
+    //Route::resource('stock', StockController::class)->names('stock');
+    Route::get('stock',function (){
+        return view('stock::index');
+    });
 });
