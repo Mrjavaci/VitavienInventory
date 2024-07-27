@@ -29,6 +29,8 @@ abstract class ApiCrud extends Controller
 
     protected array $hiddenColumns = [];
 
+    protected bool $isReturnJson = false;
+
     abstract protected function getModel(): Model;
 
     public function index(Request $request): JsonResponse|LengthAwarePaginator|Collection
@@ -47,11 +49,14 @@ abstract class ApiCrud extends Controller
         if ($request->exists(self::JUST_PAGINATOR_KEY)) {
             return $resources;
         }
+        if ($this->isReturnJson) {
+            return Result::successWithData($this->translateWithModelName('crud.list_of'), $resources);
+        }
 
-        return Result::successWithData($this->translateWithModelName('crud.list_of'), $resources);
+        return $resources;
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse|Collection|Model
     {
         try {
             Validator::make($request->all(), $this->validationRules, $this->validationMessages)->validate();
@@ -61,14 +66,17 @@ abstract class ApiCrud extends Controller
             if (! $newResource) {
                 throw new Exception($this->translateWithModelName('crud.failed'), 500);
             }
+            if ($this->isReturnJson) {
+                return Result::successWithData($this->translateWithModelName('crud.created'), $newResource);
+            }
 
-            return Result::successWithData($this->translateWithModelName('crud.created'), $newResource);
+            return $newResource;
         } catch (Exception $e) {
             return Result::exception($e);
         }
     }
 
-    public function show(int $resourceId): JsonResponse
+    public function show(int $resourceId): JsonResponse|array
     {
         $query = $this->executeModelFunction($this->getModel()::query(), __FUNCTION__);
 
@@ -78,14 +86,17 @@ abstract class ApiCrud extends Controller
             if (isset($this->overrideFunctions[__FUNCTION__])) {
                 $data[$this->overrideFunctions[__FUNCTION__]['key']] = $this->overrideFunctions[__FUNCTION__]['function']($resource);
             }
+            if ($this->isReturnJson) {
+                return Result::successWithData($this->translateWithModelName('crud.found'), $data);
+            }
 
-            return Result::successWithData($this->translateWithModelName('crud.found'), $data);
+            return $data;
         }
 
         return Result::fail($this->translateWithModelName('crud.not_found'), 404);
     }
 
-    public function update(Request $request, int $resourceId): JsonResponse
+    public function update(Request $request, int $resourceId): JsonResponse|Model
     {
         try {
             if (! $resource = $this->getModel()::query()->find($resourceId)) {
@@ -96,14 +107,17 @@ abstract class ApiCrud extends Controller
             if (! $resource->update($request->all())) {
                 throw new Exception($this->translateWithModelName('crud.update_failed'), 500);
             }
+            if ($this->isReturnJson) {
+                return Result::successWithData($this->translateWithModelName('crud.updated'), $resource);
+            }
 
-            return Result::successWithData($this->translateWithModelName('crud.updated'), $resource);
+            return $resource;
         } catch (Exception $e) {
             return Result::exception($e);
         }
     }
 
-    public function destroy($resourceId): JsonResponse
+    public function destroy($resourceId): JsonResponse|bool
     {
         try {
             $query = $this->executeModelFunction($this->getModel()::query(), __FUNCTION__);
@@ -113,8 +127,11 @@ abstract class ApiCrud extends Controller
             }
 
             $resource->delete();
+            if ($this->isReturnJson) {
+                return Result::success($this->translateWithModelName('crud.deleted'));
+            }
 
-            return Result::success($this->translateWithModelName('crud.deleted'));
+            return true;
         } catch (Exception $e) {
             return Result::exception($e);
         }
@@ -129,7 +146,6 @@ abstract class ApiCrud extends Controller
     {
         return __('model.'.Str::camel($className));
     }
-
 
     protected function executeModelFunction(Builder $query, string $functionName): Builder
     {

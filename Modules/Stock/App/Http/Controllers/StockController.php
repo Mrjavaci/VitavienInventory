@@ -2,66 +2,20 @@
 
 namespace Modules\Stock\App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
+use Modules\Stock\App\Models\Stock;
+use Modules\System\ApiHelpers\ApiCrud;
 
-class StockController extends Controller
+class StockController extends ApiCrud
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected function getModel(): Model
     {
-        return view('stock::index');
+        return new Stock();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(int $resourceId): JsonResponse
     {
-        return view('stock::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('stock::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('stock::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return parent::show($resourceId);
     }
 }

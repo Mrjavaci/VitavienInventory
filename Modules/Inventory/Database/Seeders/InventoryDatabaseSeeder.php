@@ -15,7 +15,6 @@ class InventoryDatabaseSeeder extends Seeder
     public function run(): void
     {
         Inventory::query()->create([
-            'name'          => 'Inventory 1',
             'InventoryType' => class_basename(WareHouse::class),
             'inventory_id'  => 1,
             'stock_id'      => 1,
@@ -23,7 +22,6 @@ class InventoryDatabaseSeeder extends Seeder
         ]);
 
         Inventory::query()->create([
-            'name'          => 'Inventory 2',
             'InventoryType' => class_basename(Branch::class),
             'inventory_id'  => 2,
             'stock_id'      => 2,
