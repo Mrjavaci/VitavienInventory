@@ -29,7 +29,7 @@ class Inventory extends Model
 
     public function stock()
     {
-        return $this->belongsTo(Stock::class, 'stock_id', 'id');
+        return $this->hasMany(Stock::class, 'id','stock_id');
     }
 
     protected static function getBaseInventory(Inventory $inventory)
