@@ -17,6 +17,8 @@ class DispatchOperations
 
     protected Dispatch $dispatch;
 
+    protected string $error = '';
+
     public function startDispatch(DispatchStatusEnum $dispatchStatusEnum = DispatchStatusEnum::DispatchRequest): self
     {
         CreateDispatch::make()
@@ -25,12 +27,16 @@ class DispatchOperations
                       ->setDispatchStatus($dispatchStatusEnum)
                       ->setStocksAndAmounts($this->getStocksAndAmounts())
                       ->create();
+        try {
 
         DeductDispatchedProducts::make()
                                 ->setBranch($this->getBranch())
                                 ->setWareHouse($this->getWareHouse())
                                 ->setStocksAndAmounts($this->getStocksAndAmounts())
                                 ->deduct();
+        }catch (\Exception $exception){
+            $this->error = $exception->getMessage();
+        }
 
         return $this;
     }
@@ -92,6 +98,19 @@ class DispatchOperations
 
         return $this;
     }
+
+    public function getError(): string
+    {
+        return $this->error;
+    }
+
+    public function setError(string $error): DispatchOperations
+    {
+        $this->error = $error;
+
+        return $this;
+    }
+
 
     public static function make(): self
     {

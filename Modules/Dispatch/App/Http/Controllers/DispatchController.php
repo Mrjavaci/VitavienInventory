@@ -5,9 +5,13 @@ namespace Modules\Dispatch\App\Http\Controllers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
+use Modules\Dispatch\Operations\DispatchOperations;
+use Modules\Stock\App\Models\Stock;
 use Modules\System\Helpers\Api\ApiCrud;
 use Modules\User\App\Helpers\AuthHelper;
+use Modules\WareHouse\App\Models\WareHouse;
 
 class DispatchController extends ApiCrud
 {
@@ -22,6 +26,7 @@ class DispatchController extends ApiCrud
 
     public function index(Request $request)
     {
+
         if (AuthHelper::make()->getUserType() === 'System') {
             return view('dispatch::index', parent::index($request));
         }
@@ -41,6 +46,7 @@ class DispatchController extends ApiCrud
             'data' => $data->toArray(),
         ]);
     }
+
     public function show(int $resourceId)
     {
         $this->overrideModelFunctions = [
@@ -49,6 +55,7 @@ class DispatchController extends ApiCrud
                     $query->where('branch_id', AuthHelper::make()->getUserTypeId());
                     $query->where('id', $resourceId);
                     $query->orderByDesc('created_at');
+
                     return $query;
                 },
             ],

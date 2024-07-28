@@ -14,23 +14,22 @@ class DeductDispatchedProducts
 
     protected array $stocksAndAmounts = [];
 
+    /**
+     * @throws \Exception
+     */
     public function deduct(): \Illuminate\Support\Collection
     {
         $operationalizedInventories = collect();
-        foreach ($this->getStocksAndAmounts() as $stockAndAmount) {
-            $inventories = Inventory::query()
-                                    ->where('InventoryType', 'WareHouse')
-                                    ->where('inventory_id', $this->getWareHouse()->getKey())
-                                    ->get();
+        foreach ($this->getStocksAndAmounts() as $deductAmount => $id) {
+            $inventory = Inventory::query()->where('id', $id)->first();
+            $inventoryAmount = $inventory->amount;
+            if ($inventory->amount < 0 || $inventory->amount == 0 || ($inventoryAmount - $deductAmount) < 0) {
+                throw new \Exception('Inventory amount is not enough');
+            }
+            $inventory->amount -= $deductAmount;
 
-            collect($stockAndAmount)->each(fn($amount, $stock) => $inventories->each(function ($inventory) use ($stock, $amount, $operationalizedInventories) {
-                if ($inventory->stock === $stock) {
-                    $inventory->update([
-                        'amount' => $inventory->amount - $amount,
-                    ]);
-                    $operationalizedInventories->push($inventory);
-                }
-            }));
+            $inventory->save();
+            $operationalizedInventories->push($inventory);
         }
 
         return $operationalizedInventories;

@@ -23,6 +23,10 @@ class ExampleTest extends TestCase
                                     10 => Stock::query()->first()->id,
                                 ])->startDispatch();
 
+        if (empty($op->getError())) {
+            dd($op->getError());
+        }
+
         $this->assertTrue(true);
     }
 }
