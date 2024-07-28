@@ -14,6 +14,5 @@ use Modules\User\App\Http\Controllers\UserController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('user', UserController::class)->names('user');
-});
+Route::get('login', [UserController::class, 'index'])->name('login');
+Route::post('login', [UserController::class, 'login'])->name('login');

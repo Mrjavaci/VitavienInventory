@@ -11,5 +11,5 @@ class User extends Model
 
    protected $guarded = [];
 
-   protected $table = 'user';
+   protected $table = 'users';
 }
