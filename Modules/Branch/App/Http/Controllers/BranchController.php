@@ -21,7 +21,7 @@ class BranchController extends ApiCrud
             return view('branch::index', parent::index($request));
         }
 
-        return view('branch::index', $this->getBranchDataWithUserData());
+        return view('branch::index', [...$this->getBranchDataWithUserData(), 'pageTitle' => 'Branch Details']);
     }
 
     protected function getBranchDataWithUserData()

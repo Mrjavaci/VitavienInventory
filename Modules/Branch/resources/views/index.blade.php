@@ -6,9 +6,6 @@
 @section('title', "Adminlte3")
 @section("content")
 
-    @php
-    $pageTitle = $name;
-    @endphp
 
 
     <div class="mb-3">
@@ -24,7 +21,6 @@
             </li>
         </ul>
     </div>
-
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Inventory Details</h3>
@@ -32,48 +28,46 @@
         <div class="card-body">
             <table id="inventoryDetails" class="table table-bordered table-hover">
                 <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Inventory Type</th>
-                    <th>Stock ID</th>
-                    <th>Amount</th>
-                    <th>Stock Name</th>
-                </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Amount</th>
+                        <th>Stock Name</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach($inventory as $item)
-                    <tr>
-                        <td>{{ $item['id'] }}</td>
-                        <td>{{ $item['InventoryType'] }}</td>
-                        <td>{{ $item['stock_id'] }}</td>
-                        <td>{{ $item['amount'] }}</td>
-                        <td>
-                            @foreach($item['stock'] as $stockItem)
-                                {{ $stockItem['name'] }}
-                                {{ $stockItem['stock_unit']['name'] }}
-                            @endforeach
-                        </td>
-                    </tr>
-                @endforeach
+                    @foreach($inventory as $item)
+                        <tr>
+                            <td>{{ $item['id'] }}</td>
+                            <td>{{ $item['amount'] }}</td>
+                            <td>
+                                @foreach($item['stock'] as $stockItem)
+                                    {{ $stockItem['name'] }}
+                                    {{ $stockItem['stock_unit']['name'] }}
+                                @endforeach
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 
+
+
 @endsection
 
 @pushOnce('scripts')
     <script>
-        $(document).ready(function() {
-            $('#inventoryDetails').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+    $(document).ready(function () {
+        $('#inventoryDetails').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
         });
+    });
     </script>
 @endpushonce

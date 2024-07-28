@@ -15,5 +15,7 @@ use Modules\Branch\App\Http\Controllers\BranchController;
 */
 
 Route::group([], function () {
-    Route::resource('branch', BranchController::class)->names('branch');
+    Route::resource('branch', BranchController::class)
+         ->names('branch')
+         ->middleware(['auth']);
 });
