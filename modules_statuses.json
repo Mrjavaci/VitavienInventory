@@ -4,5 +4,6 @@
     "Branch": true,
     "WareHouse": true,
     "Inventory": true,
-    "User": true
+    "User": true,
+    "Dispatch": true
 }

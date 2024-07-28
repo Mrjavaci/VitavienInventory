@@ -4,6 +4,7 @@ namespace Modules\Branch\App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Inventory\App\Models\Inventory;
 
 class Branch extends Model
@@ -19,5 +20,10 @@ class Branch extends Model
     public function inventory()
     {
         return $this->hasMany(Inventory::class, 'inventory_id', 'id');
+    }
+
+    public function dispatches()
+    {
+        return $this->hasMany(Dispatch::class, 'branch_id', 'id');
     }
 }

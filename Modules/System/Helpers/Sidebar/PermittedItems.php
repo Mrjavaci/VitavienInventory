@@ -7,7 +7,7 @@ use Modules\User\enums\UserTypeEnum;
 
 class PermittedItems
 {
-    public static function get()
+    public static function get(): array|\Illuminate\Http\RedirectResponse
     {
         if (! AuthHelper::make()->isLogged()) {
             return redirect()->route('login');
@@ -21,6 +21,7 @@ class PermittedItems
         if (AuthHelper::make()->getUserType() === UserTypeEnum::WareHouse->name) {
             return ['WareHouse', 'Settings'];
         }
+
 
         return [];
     }
