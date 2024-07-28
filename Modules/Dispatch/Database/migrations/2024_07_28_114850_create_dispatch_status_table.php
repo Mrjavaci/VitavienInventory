@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('dispatch_status', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dispatch_id')->constrained();
+            $table->unsignedBigInteger('dispatch_id');
             $table->string('status');
             $table->timestamps();
         });
