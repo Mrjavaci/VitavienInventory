@@ -5,7 +5,7 @@ namespace Modules\Stock\App\Http\Controllers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Modules\Stock\App\Models\Stock;
-use Modules\System\ApiHelpers\ApiCrud;
+use Modules\System\Helpers\Api\ApiCrud;
 
 class StockController extends ApiCrud
 {

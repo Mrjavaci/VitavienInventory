@@ -3,7 +3,7 @@
 namespace Modules\WareHouse\App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\System\ApiHelpers\ApiCrud;
+use Modules\System\Helpers\Api\ApiCrud;
 use Modules\WareHouse\App\Models\WareHouse;
 
 class WareHouseController extends ApiCrud
