@@ -25,5 +25,9 @@ class AuthHelper
     {
         return Auth::user()->user_type;
     }
+    public function getUserTypeId()
+    {
+        return Auth::user()->user_type_id;
+    }
 
 }

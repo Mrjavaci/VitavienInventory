@@ -4,11 +4,9 @@ namespace Modules\System\Helpers\Api;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -33,7 +31,7 @@ abstract class ApiCrud extends Controller
 
     abstract protected function getModel(): Model;
 
-    public function index(Request $request): JsonResponse|LengthAwarePaginator|Collection
+    public function index(Request $request)
     {
         $perPage = $request->input('per_page', 20);
 
@@ -56,7 +54,7 @@ abstract class ApiCrud extends Controller
         return $resources;
     }
 
-    public function store(Request $request): JsonResponse|Collection|Model
+    public function store(Request $request)
     {
         try {
             Validator::make($request->all(), $this->validationRules, $this->validationMessages)->validate();
@@ -76,7 +74,7 @@ abstract class ApiCrud extends Controller
         }
     }
 
-    public function show(int $resourceId): JsonResponse|array
+    public function show(int $resourceId)
     {
         $query = $this->executeModelFunction($this->getModel()::query(), __FUNCTION__);
 
@@ -96,7 +94,7 @@ abstract class ApiCrud extends Controller
         return Result::fail($this->translateWithModelName('crud.not_found'), 404);
     }
 
-    public function update(Request $request, int $resourceId): JsonResponse|Model
+    public function update(Request $request, int $resourceId)
     {
         try {
             if (! $resource = $this->getModel()::query()->find($resourceId)) {
@@ -117,7 +115,7 @@ abstract class ApiCrud extends Controller
         }
     }
 
-    public function destroy($resourceId): JsonResponse|bool
+    public function destroy($resourceId): JsonResponse|bool|array
     {
         try {
             $query = $this->executeModelFunction($this->getModel()::query(), __FUNCTION__);

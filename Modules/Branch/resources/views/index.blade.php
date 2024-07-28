@@ -1,7 +1,15 @@
-@extends('branch::layouts.master')
+@extends("adminlte3.layouts.app")
 
-@section('content')
-    <h1>Hello World</h1>
+@pushOnce('css')
+    <style></style>
+@endpushonce
+@section('title', "Adminlte3")
+@section("content")
 
-    <p>Module: {!! config('branch.name') !!}</p>
+    @dump(get_defined_vars())
+
 @endsection
+
+@pushOnce('scripts')
+    <script></script>
+@endpushonce
