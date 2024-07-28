@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('dispatch', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('branch_id')->constrained();
-            $table->foreignId('ware_house_id')->constrained();
+            $table->unsignedBigInteger('branch_id');
+            $table->unsignedBigInteger('ware_house_id');
             $table->json('stocks_and_amounts');
             $table->timestamps();
         });
