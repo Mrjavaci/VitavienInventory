@@ -20,6 +20,9 @@ class ItemToIcon
         if ($item === 'Settings') {
             return 'fas fa-cog';
         }
+        if ($item === 'Dispatch') {
+            return 'fas fa-truck';
+        }
 
         return 'fas fa-home';
     }

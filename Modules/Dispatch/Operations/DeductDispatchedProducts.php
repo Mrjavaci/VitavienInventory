@@ -23,12 +23,12 @@ class DeductDispatchedProducts
                                     ->where('inventory_id', $this->getWareHouse()->getKey())
                                     ->get();
 
-            collect($stockAndAmount)->each(fn($amount, $stock) => $inventories->each(function ($inventory) use ($stock, $amount, $operationalizedStocks) {
+            collect($stockAndAmount)->each(fn($amount, $stock) => $inventories->each(function ($inventory) use ($stock, $amount, $operationalizedInventories) {
                 if ($inventory->stock === $stock) {
                     $inventory->update([
                         'amount' => $inventory->amount - $amount,
                     ]);
-                    $operationalizedStocks->push($inventory);
+                    $operationalizedInventories->push($inventory);
                 }
             }));
         }

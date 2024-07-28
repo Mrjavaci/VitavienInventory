@@ -2,66 +2,64 @@
 
 namespace Modules\Dispatch\App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Modules\Dispatch\App\Models\Dispatch;
+use Modules\System\Helpers\Api\ApiCrud;
+use Modules\User\App\Helpers\AuthHelper;
 
-class DispatchController extends Controller
+class DispatchController extends ApiCrud
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    protected function getModel(): Model
     {
-        return view('dispatch::index');
+        return new Dispatch();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(Request $request)
     {
-        return view('dispatch::create');
-    }
+        if (AuthHelper::make()->getUserType() === 'System') {
+            return view('dispatch::index', parent::index($request));
+        }
+        $this->overrideModelFunctions = [
+            __FUNCTION__ => [
+                'function' => function (Builder $model) use ($request) {
+                    $query = $model->orderByDesc('id');
+                    $query->where('branch_id', AuthHelper::make()->getUserTypeId());
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
+                    return $query;
+                },
+            ],
+        ];
+        $data = parent::index($request);
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('dispatch::show');
+        return view('dispatch::index', [
+            'data' => $data->toArray(),
+        ]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function show(int $resourceId)
     {
-        return view('dispatch::edit');
-    }
+        $this->overrideModelFunctions = [
+            __FUNCTION__ => [
+                'function' => function (Builder $query) use ($resourceId) {
+                    $query->where('branch_id', AuthHelper::make()->getUserTypeId());
+                    $query->where('id', $resourceId);
+                    $query->orderByDesc('created_at');
+                    return $query;
+                },
+            ],
+        ];
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
+        $data = parent::show($resourceId);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        $data = collect($data);
+
+        return view('dispatch::show', [
+            'inventory' => $data,
+        ]);
     }
 }

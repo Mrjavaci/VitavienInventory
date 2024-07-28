@@ -19,13 +19,13 @@ class CreateDispatch
 
     public function create(): self
     {
-        $this->getBranch()->dispatches()->create([
+        $dispatch = $this->getBranch()->dispatches()->create([
             'ware_house_id'      => $this->getWareHouse()->getKey(),
-            'stocks_and_amounts' => $this->getStocksAndAmounts(),
+            'stocks_and_amounts' => collect($this->getStocksAndAmounts())->toJson(),
         ]);
         DispatchStatus::query()->create([
-            'branch_id' => $this->getBranch()->getKey(),
-            'status'    => $this->dispatchStatusEnum->name,
+            'dispatch_id' => $dispatch->getKey(),
+            'status'      => $this->dispatchStatusEnum->name,
         ]);
 
         return $this;

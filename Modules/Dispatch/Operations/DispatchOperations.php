@@ -17,12 +17,13 @@ class DispatchOperations
 
     protected Dispatch $dispatch;
 
-    public function startDispatch(DispatchStatusEnum $dispatchStatusEnum): self
+    public function startDispatch(DispatchStatusEnum $dispatchStatusEnum = DispatchStatusEnum::DispatchRequest): self
     {
         CreateDispatch::make()
                       ->setBranch($this->getBranch())
                       ->setWareHouse($this->getWareHouse())
                       ->setDispatchStatus($dispatchStatusEnum)
+                      ->setStocksAndAmounts($this->getStocksAndAmounts())
                       ->create();
 
         DeductDispatchedProducts::make()
@@ -64,28 +65,28 @@ class DispatchOperations
         return $this->wareHouse;
     }
 
-    public function setDispatch(Dispatch $dispatch): DispatchOperations
+    public function setDispatch(Dispatch $dispatch): self
     {
         $this->dispatch = $dispatch;
 
         return $this;
     }
 
-    public function setStocksAndAmounts(array $stocksAndAmounts): DispatchOperations
+    public function setStocksAndAmounts(array $stocksAndAmounts): self
     {
         $this->stocksAndAmounts = $stocksAndAmounts;
 
         return $this;
     }
 
-    public function setBranch(Branch $branch): DispatchOperations
+    public function setBranch(Branch $branch): self
     {
         $this->branch = $branch;
 
         return $this;
     }
 
-    public function setWareHouse(WareHouse $wareHouse): DispatchOperations
+    public function setWareHouse(WareHouse $wareHouse): self
     {
         $this->wareHouse = $wareHouse;
 

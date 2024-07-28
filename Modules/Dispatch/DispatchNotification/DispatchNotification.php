@@ -13,7 +13,9 @@ class DispatchNotification
 
     public function notify()
     {
-
+        /**
+         * @todo add notify feature
+         */
     }
 
     public function getDispatch(): Dispatch
