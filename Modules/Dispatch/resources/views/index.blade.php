@@ -5,44 +5,48 @@
 @endpushonce
 @section('title', "Adminlte3")
 @section("content")
-
-    @foreach($data as $inventory)
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Inventory Details</h3>
-            </div>
-            <div class="card-body">
-
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <strong>İD:</strong> {{ $inventory['id'] }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>WareHouse Name</strong> {{ $inventory['ware_house']['name'] }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Created At:</strong> {{ $inventory['created_at'] }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Created At:</strong> {{ $inventory['updated_at'] }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Detail:</strong> <a href="{{route('dispatch.show', $inventory['id'])}}">Detail</a>
-                    </li>
-
-
-                </ul>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Dispatch List</h3>
+            <a href="{{ route('dispatch.create') }}">
+                <button type="button" class="btn btn-success float-right"><i class="far fa-plus-square"></i> Make Dispatch</button>
+            </a>
         </div>
+        <div class="card-body">
 
-    @endforeach
+            <table id="dispatchList" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>İD</th>
+                        <th>WareHouse Name</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Last Status</th>
+                        <th>Detail:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($data as $inventory)
+                        <tr>
+                            <td>{{ $inventory['id'] }}</td>
+                            <td>{{ $inventory['ware_house']['name'] }}</td>
+                            <td>{{ $inventory['created_at'] }}</td>
+                            <td>{{ $inventory['updated_at']  }}</td>
+                            <td>{{ $inventory['lastStatus'] }}</td>
+                            <td><a href="{{ route('dispatch.show', $inventory['id']) }}">Detail</a></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 @endsection
 
 @pushOnce('scripts')
     <script>
     $(document).ready(function () {
-        $('#inventoryDetails').DataTable({
+        $('#dispatchList').DataTable({
             'paging': true,
             'lengthChange': false,
             'searching': false,

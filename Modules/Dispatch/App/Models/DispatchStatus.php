@@ -3,11 +3,13 @@
 namespace Modules\Dispatch\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\System\Traits\HasDateFormat;
 
 class DispatchStatus extends Model
 {
+    use HasDateFormat;
 
-   protected $guarded = [];
-   protected $table = 'dispatch_status';
+    protected $guarded = [];
+
+    protected $table = 'dispatch_status';
 }

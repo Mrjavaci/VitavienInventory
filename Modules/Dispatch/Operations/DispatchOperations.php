@@ -2,6 +2,8 @@
 
 namespace Modules\Dispatch\Operations;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
@@ -21,6 +23,8 @@ class DispatchOperations
 
     public function startDispatch(DispatchStatusEnum $dispatchStatusEnum = DispatchStatusEnum::DispatchRequest): self
     {
+        DB::beginTransaction();
+
         CreateDispatch::make()
                       ->setBranch($this->getBranch())
                       ->setWareHouse($this->getWareHouse())
@@ -28,15 +32,16 @@ class DispatchOperations
                       ->setStocksAndAmounts($this->getStocksAndAmounts())
                       ->create();
         try {
-
-        DeductDispatchedProducts::make()
-                                ->setBranch($this->getBranch())
-                                ->setWareHouse($this->getWareHouse())
-                                ->setStocksAndAmounts($this->getStocksAndAmounts())
-                                ->deduct();
-        }catch (\Exception $exception){
+            DeductDispatchedProducts::make()
+                                    ->setBranch($this->getBranch())
+                                    ->setWareHouse($this->getWareHouse())
+                                    ->setStocksAndAmounts($this->getStocksAndAmounts())
+                                    ->deduct();
+        } catch (\Exception $exception) {
+            DB::rollBack();
             $this->error = $exception->getMessage();
         }
+        DB::commit();
 
         return $this;
     }
@@ -71,7 +76,12 @@ class DispatchOperations
         return $this->wareHouse;
     }
 
-    public function setDispatch(Dispatch $dispatch): self
+    public function getError(): string
+    {
+        return $this->error;
+    }
+
+    public function setDispatch(Dispatch|Model $dispatch): self
     {
         $this->dispatch = $dispatch;
 
@@ -99,18 +109,12 @@ class DispatchOperations
         return $this;
     }
 
-    public function getError(): string
-    {
-        return $this->error;
-    }
-
     public function setError(string $error): DispatchOperations
     {
         $this->error = $error;
 
         return $this;
     }
-
 
     public static function make(): self
     {

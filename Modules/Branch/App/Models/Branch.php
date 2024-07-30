@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Inventory\App\Models\Inventory;
+use Modules\System\Traits\HasDateFormat;
 
 class Branch extends Model
 {
-    use HasFactory;
+    use HasDateFormat;
 
     protected $table = 'branch';
 

@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use Modules\Branch\App\Models\Branch;
+use Modules\Dispatch\App\Models\Dispatch;
+use Modules\Dispatch\Enums\DispatchStatusEnum;
 use Modules\Dispatch\Operations\DispatchOperations;
 use Modules\Stock\App\Models\Stock;
 use Modules\User\App\Helpers\AuthHelper;
@@ -26,6 +28,9 @@ class ExampleTest extends TestCase
         if (empty($op->getError())) {
             dd($op->getError());
         }
+        DispatchOperations::make()
+                          ->setDispatch(Dispatch::query()->first())
+                          ->updateDispatch(DispatchStatusEnum::DispatchRequestApproved);
 
         $this->assertTrue(true);
     }

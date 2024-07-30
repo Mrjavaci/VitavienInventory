@@ -17,6 +17,7 @@ class UpdateDispatchStatus
     {
         $justCreateEnums = [
             DispatchStatusEnum::DispatchRequest->name,
+            DispatchStatusEnum::DispatchRequestApproved->name,
             DispatchStatusEnum::Shipped->name,
             DispatchStatusEnum::OnWay->name,
             DispatchStatusEnum::Reached->name,

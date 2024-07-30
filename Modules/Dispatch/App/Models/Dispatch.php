@@ -3,15 +3,18 @@
 namespace Modules\Dispatch\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\System\Traits\HasDateFormat;
 use Modules\WareHouse\App\Models\WareHouse;
 
 class Dispatch extends Model
 {
+    use HasDateFormat;
     protected $guarded = [];
 
     protected $table = 'dispatch';
 
     protected $with = ['dispatchStatuses', 'wareHouse'];
+
 
     public function dispatchStatuses()
     {
