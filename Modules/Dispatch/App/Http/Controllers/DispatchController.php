@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
+use Modules\Dispatch\Operations\DispatchOperations;
 use Modules\Stock\App\Models\Stock;
 use Modules\System\Helpers\Api\ApiCrud;
 use Modules\User\App\Helpers\AuthHelper;
@@ -80,6 +82,26 @@ class DispatchController extends ApiCrud
         return view('dispatch::show', [
             'inventory' => $data,
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $stocksAndAmounts = json_decode($request->stocksAndAmounts, true);
+        if (count($stocksAndAmounts) === 0) {
+            return redirect()->route('dispatch.index')->with('error', 'Please select at least one stock');
+        }
+
+        $stocksAndAmounts = collect($stocksAndAmounts)
+            ->mapWithKeys(fn($data) => [$data[2] => $data[0]])
+            ->toArray();
+
+        DispatchOperations::make()
+                          ->setBranch(Branch::query()->where('id', AuthHelper::make()->getUserTypeId())->firstOrFail())
+                          ->setWareHouse(WareHouse::query()->where('id', $request->wareHouse)->firstOrFail())
+                          ->setStocksAndAmounts($stocksAndAmounts)
+                          ->startDispatch();
+
+        return redirect()->route('dispatch.index');
     }
 
     protected function normalizeStockAndAmounts(Collection $stockAndAmounts): Collection

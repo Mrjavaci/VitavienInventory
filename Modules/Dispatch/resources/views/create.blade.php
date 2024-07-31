@@ -11,7 +11,7 @@
         </div>
         <div class="card-body">
 
-            <form action="{{ route('dispatch.store') }}" method="post">
+            <form action="{{ route('dispatch.store') }}" class="dispatchStoreForm" method="post">
                 @csrf
                 @include('dispatch::partials.form')
                 <div class="form-group">

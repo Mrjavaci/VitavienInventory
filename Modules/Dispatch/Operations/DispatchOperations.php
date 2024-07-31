@@ -95,14 +95,14 @@ class DispatchOperations
         return $this;
     }
 
-    public function setBranch(Branch $branch): self
+    public function setBranch(Branch|Model $branch): self
     {
         $this->branch = $branch;
 
         return $this;
     }
 
-    public function setWareHouse(WareHouse $wareHouse): self
+    public function setWareHouse(WareHouse|Model $wareHouse): self
     {
         $this->wareHouse = $wareHouse;
 

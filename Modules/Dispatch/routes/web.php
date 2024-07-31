@@ -15,5 +15,5 @@ use Modules\Dispatch\App\Http\Controllers\DispatchController;
 */
 
 Route::group([], function () {
-    Route::resource('dispatch', DispatchController::class)->names('dispatch');
+    Route::resource('dispatch', DispatchController::class)->names('dispatch')->middleware(['auth']);
 });

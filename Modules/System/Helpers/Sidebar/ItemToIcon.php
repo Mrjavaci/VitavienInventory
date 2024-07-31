@@ -6,7 +6,7 @@ use Modules\User\enums\UserTypeEnum;
 
 class ItemToIcon
 {
-    public static function getIcon(string $item)
+    public static function getIcon(string|null $item): string
     {
         if ($item === UserTypeEnum::System->name) {
             return 'fas fa-home';
