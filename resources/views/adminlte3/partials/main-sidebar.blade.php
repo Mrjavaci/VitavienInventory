@@ -16,7 +16,7 @@
                             <i class="nav-icon far {{\Modules\System\Helpers\Sidebar\ItemToIcon::getIcon($item)}}"></i>
                             <p>
                                 {{$item}}
-                                <span class="badge badge-info right">2</span>
+                                <span class="badge badge-info right"></span>
                             </p>
                         </a>
                     </li>

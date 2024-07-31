@@ -19,7 +19,7 @@ class PermittedItems
             return ['Branch', 'Settings', 'Dispatch'];
         }
         if (AuthHelper::make()->getUserType() === UserTypeEnum::WareHouse->name) {
-            return ['WareHouse', 'Settings', 'Dispatch'];
+            return ['WareHouse', 'Settings', 'Dispatch', 'WaitingDispatches'];
         }
 
         return [];

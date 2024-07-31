@@ -12,6 +12,7 @@ use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\Operations\DispatchOperations;
 use Modules\Stock\App\Models\Stock;
 use Modules\System\Helpers\Api\ApiCrud;
+use Modules\System\Helpers\StockAndAmountNormalizer;
 use Modules\User\App\Helpers\AuthHelper;
 use Modules\WareHouse\App\Models\WareHouse;
 
@@ -106,6 +107,6 @@ class DispatchController extends ApiCrud
 
     protected function normalizeStockAndAmounts(Collection $stockAndAmounts): Collection
     {
-        return $stockAndAmounts->map(fn($stockId, $amount) => ['amount' => $amount, 'stock' => Stock::query()->find($stockId)]);
+        return StockAndAmountNormalizer::make()->normalize($stockAndAmounts);
     }
 }

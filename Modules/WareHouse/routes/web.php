@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\WareHouse\App\Http\Controllers\WaitingDispatchesController;
 use Modules\WareHouse\App\Http\Controllers\WareHouseController;
 
 /*
@@ -15,5 +16,7 @@ use Modules\WareHouse\App\Http\Controllers\WareHouseController;
 */
 
 Route::group([], function () {
-    Route::resource('warehouse', WareHouseController::class)->names('warehouse');
+    Route::resource('warehouse', WareHouseController::class)->names('warehouse')->middleware(['auth']);
 });
+Route::resource('waitingdispatches',WaitingDispatchesController::class)->names('waitingdispatches')->middleware(['auth']);
+

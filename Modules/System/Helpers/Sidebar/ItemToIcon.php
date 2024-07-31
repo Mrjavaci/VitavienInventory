@@ -23,6 +23,9 @@ class ItemToIcon
         if ($item === 'Dispatch') {
             return 'fas fa-truck';
         }
+        if ($item === 'WaitingDispatches') {
+            return 'fas fa-truck-loading';
+        }
 
         return 'fas fa-home';
     }
