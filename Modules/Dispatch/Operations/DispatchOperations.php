@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
+use Modules\Dispatch\DispatchNotification\DispatchNotification;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
 use Modules\WareHouse\App\Models\WareHouse;
 
@@ -25,18 +26,24 @@ class DispatchOperations
     {
         DB::beginTransaction();
 
-        CreateDispatch::make()
-                      ->setBranch($this->getBranch())
-                      ->setWareHouse($this->getWareHouse())
-                      ->setDispatchStatus($dispatchStatusEnum)
-                      ->setStocksAndAmounts($this->getStocksAndAmounts())
-                      ->create();
+        $createDispatch = CreateDispatch::make()
+                                        ->setBranch($this->getBranch())
+                                        ->setWareHouse($this->getWareHouse())
+                                        ->setDispatchStatus($dispatchStatusEnum)
+                                        ->setStocksAndAmounts($this->getStocksAndAmounts())
+                                        ->create();
         try {
             DeductDispatchedProducts::make()
                                     ->setBranch($this->getBranch())
                                     ->setWareHouse($this->getWareHouse())
                                     ->setStocksAndAmounts($this->getStocksAndAmounts())
                                     ->deduct();
+
+            DispatchNotification::make()
+                                ->setDispatch($createDispatch->getDispatch())
+                                ->setDispatchStatusEnum($dispatchStatusEnum)
+                                ->notify();
+
         } catch (\Exception $exception) {
             DB::rollBack();
             $this->error = $exception->getMessage();

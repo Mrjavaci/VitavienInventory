@@ -3,6 +3,7 @@
 namespace Modules\Dispatch\Operations;
 
 use Modules\Branch\App\Models\Branch;
+use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
 use Modules\WareHouse\App\Models\WareHouse;
@@ -17,6 +18,8 @@ class CreateDispatch
 
     protected dispatchStatusEnum $dispatchStatusEnum;
 
+    protected Dispatch $dispatch;
+
     public function create(): self
     {
         $dispatch = $this->getBranch()->dispatches()->create([
@@ -29,6 +32,11 @@ class CreateDispatch
         ]);
 
         return $this;
+    }
+
+    public function getDispatch(): Dispatch
+    {
+        return $this->dispatch;
     }
 
     public function getStocksAndAmounts(): array
