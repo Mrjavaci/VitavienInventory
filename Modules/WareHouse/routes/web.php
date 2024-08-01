@@ -16,7 +16,8 @@ use Modules\WareHouse\App\Http\Controllers\WareHouseController;
 */
 
 Route::group([], function () {
-    Route::resource('warehouse', WareHouseController::class)->names('warehouse')->middleware(['auth']);
+    //Route::resource('warehouse', WareHouseController::class)->names('warehouse')->middleware(['auth']);
 });
-Route::resource('waitingdispatches',WaitingDispatchesController::class)->names('waitingdispatches')->middleware(['auth']);
+Route::get('warehouse/inventory', [WareHouseController::class, 'index'])->name('warehouseinventory.index')->middleware(['auth']);
+Route::resource('waitingdispatches', WaitingDispatchesController::class)->names('waitingdispatches')->middleware(['auth']);
 

@@ -14,7 +14,10 @@ class UpdateDispatchStatus
 
     protected DispatchStatusEnum $dispatchStatusEnum;
 
-    public function update()
+    /**
+     * @throws \Exception
+     */
+    public function update(): void
     {
         $justCreateEnums = [
             DispatchStatusEnum::DispatchRequest->name,

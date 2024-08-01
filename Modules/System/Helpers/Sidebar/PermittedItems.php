@@ -13,13 +13,28 @@ class PermittedItems
             return redirect()->route('login');
         }
         if (AuthHelper::make()->getUserType() === UserTypeEnum::System->name) {
-            return ['Branch', 'WareHouse', 'Settings', 'Dispatch'];
+            return [
+                'Branch',
+                'WareHouse',
+                'Settings',
+                'Dispatch',
+            ];
         }
         if (AuthHelper::make()->getUserType() === UserTypeEnum::Branch->name) {
-            return ['Branch', 'Settings', 'Dispatch'];
+            return [
+                'Branch',
+                'Settings',
+                'Dispatch',
+            ];
         }
         if (AuthHelper::make()->getUserType() === UserTypeEnum::WareHouse->name) {
-            return ['WareHouse', 'Settings', 'Dispatch', 'WaitingDispatches'];
+            return [
+                'WareHouse',
+                'Settings',
+                'Dispatch',
+                'WaitingDispatches',
+                'WareHouseInventory',
+            ];
         }
 
         return [];

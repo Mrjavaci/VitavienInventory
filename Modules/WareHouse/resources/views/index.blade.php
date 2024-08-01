@@ -6,13 +6,22 @@
 @section('title', "Adminlte3")
 @section("content")
 
-
+    <div class="mb-3">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <strong>Name:</strong> {{ $data['name'] }}
+            </li>
+            <li class="list-group-item">
+                <strong>Phone:</strong> {{ $data['location'] }}
+            </li>
+        </ul>
+    </div>
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Inventory Details</h3>
         </div>
         <div class="card-body">
-            <table id="waitingDispatchesList" class="table table-bordered table-hover">
+            <table id="inventoryDetails" class="table table-bordered table-hover">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -21,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($inventory as $item)
+                    @foreach($data['inventory'] as $item)
                         <tr>
                             <td>{{ $item['id'] }}</td>
                             <td>{{ $item['amount'] }}</td>
@@ -38,22 +47,20 @@
         </div>
     </div>
 
-
-
 @endsection
 
 @pushOnce('scripts')
     <script>
     $(document).ready(function () {
-        $('#waitingDispatchesList').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-        });
-    });
+        $('#inventoryDetails').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'searching': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'responsive': true,
+        })
+    })
     </script>
 @endpushonce
