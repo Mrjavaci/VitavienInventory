@@ -2,6 +2,7 @@
 
 namespace Modules\Dispatch\Operations;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\DispatchNotification\DispatchNotification;
@@ -17,17 +18,18 @@ class UpdateDispatchStatus
     {
         $justCreateEnums = [
             DispatchStatusEnum::DispatchRequest->name,
-            DispatchStatusEnum::DispatchRequestApproved->name,
             DispatchStatusEnum::Shipped->name,
             DispatchStatusEnum::OnWay->name,
             DispatchStatusEnum::Reached->name,
         ];
         if (in_array($this->dispatchStatusEnum->name, $justCreateEnums)) {
-            $this->createDispatchStatus();
-            DispatchNotification::make()
-                                ->setDispatch($this->dispatch)
-                                ->setDispatchStatusEnum($this->dispatchStatusEnum)
-                                ->notify();
+            $this->dispatchJustCreate();
+
+            return;
+        }
+
+        if ($this->getDispatchStatusEnum()->name === DispatchStatusEnum::DispatchRequestApproved->name) {
+            $this->dispatchRequestApproved();
 
             return;
         }
@@ -81,5 +83,30 @@ class UpdateDispatchStatus
             'dispatch_id' => $this->getDispatch()->getKey(),
             'status'      => $this->getDispatchStatusEnum()->name,
         ]);
+    }
+
+    protected function dispatchRequestApproved(): void
+    {
+        DB::beginTransaction();
+        try {
+            $this->createDispatchStatus();
+
+            DeductDispatchedProducts::make()
+                                    ->setDispatch($this->getDispatch())
+                                    ->deduct();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw new $exception;
+        }
+        DB::commit();
+    }
+
+    protected function dispatchJustCreate(): void
+    {
+        $this->createDispatchStatus();
+        DispatchNotification::make()
+                            ->setDispatch($this->dispatch)
+                            ->setDispatchStatusEnum($this->dispatchStatusEnum)
+                            ->notify();
     }
 }

@@ -17,3 +17,5 @@ use Modules\Dispatch\App\Http\Controllers\DispatchController;
 Route::group([], function () {
     Route::resource('dispatch', DispatchController::class)->names('dispatch')->middleware(['auth']);
 });
+
+Route::post('dispatch/approve', [DispatchController::class, 'approve'])->name('dispatch.approve');

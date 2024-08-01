@@ -43,6 +43,8 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <br>
+                    <button type="button" onclick="approveDispatch({{$dispatch['id']}})" class="btn btn-success float-right"><i class="far fa-check-square"></i> Approve Dispatch</button>
                 </div>
             </div>
         @endforeach
@@ -52,6 +54,23 @@
 
 @pushOnce('scripts')
     <script>
+
+
+    function approveDispatch(id) {
+
+        $.ajax({
+            type: 'POST',
+            url: "{{ route('dispatch.approve') }}",
+            data: {
+                '_token': "{{ csrf_token() }}",
+                'id': id
+            },
+            success: function (data) {
+                window.location.reload()
+            }
+        })
+    }
+
     $(document).ready(function () {
         @if(count($dispatches) !== 0)
         @foreach($dispatches as $dispatche)

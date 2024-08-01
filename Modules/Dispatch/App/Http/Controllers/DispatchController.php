@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
+use Modules\Dispatch\Enums\DispatchStatusEnum;
 use Modules\Dispatch\Operations\DispatchOperations;
 use Modules\Stock\App\Models\Stock;
 use Modules\System\Helpers\Api\ApiCrud;
@@ -18,6 +19,14 @@ use Modules\WareHouse\App\Models\WareHouse;
 
 class DispatchController extends ApiCrud
 {
+    public function approve(Request $request)
+    {
+        DispatchOperations::make()
+                          ->setWareHouse(WareHouse::query()->where('id', AuthHelper::make()->getUserTypeId())->first())
+                          ->setDispatch(Dispatch::query()->find($request->input('id')))
+                          ->updateDispatch(DispatchStatusEnum::DispatchRequestApproved);
+    }
+
     public function create()
     {
         return view('dispatch::create', [

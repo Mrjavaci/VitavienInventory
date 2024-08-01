@@ -33,17 +33,10 @@ class DispatchOperations
                                         ->setStocksAndAmounts($this->getStocksAndAmounts())
                                         ->create();
         try {
-            DeductDispatchedProducts::make()
-                                    ->setBranch($this->getBranch())
-                                    ->setWareHouse($this->getWareHouse())
-                                    ->setStocksAndAmounts($this->getStocksAndAmounts())
-                                    ->deduct();
-
             DispatchNotification::make()
                                 ->setDispatch($createDispatch->getDispatch())
                                 ->setDispatchStatusEnum($dispatchStatusEnum)
                                 ->notify();
-
         } catch (\Exception $exception) {
             DB::rollBack();
             $this->error = $exception->getMessage();

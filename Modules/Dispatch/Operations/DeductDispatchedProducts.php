@@ -2,15 +2,12 @@
 
 namespace Modules\Dispatch\Operations;
 
-use Modules\Branch\App\Models\Branch;
+use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Inventory\App\Models\Inventory;
-use Modules\WareHouse\App\Models\WareHouse;
 
 class DeductDispatchedProducts
 {
-    protected Branch $branch;
-
-    protected WareHouse $wareHouse;
+    protected Dispatch $dispatch;
 
     protected array $stocksAndAmounts = [];
 
@@ -35,38 +32,20 @@ class DeductDispatchedProducts
         return $operationalizedInventories;
     }
 
-    public function getBranch(): Branch
-    {
-        return $this->branch;
-    }
-
-    public function getWareHouse(): WareHouse
-    {
-        return $this->wareHouse;
-    }
-
     public function getStocksAndAmounts(): array
     {
-        return $this->stocksAndAmounts;
+        return $this->dispatch->getStocksAndAmounts();
     }
 
-    public function setBranch(Branch $branch): DeductDispatchedProducts
+    public function getDispatch(): Dispatch
     {
-        $this->branch = $branch;
-
-        return $this;
+        return $this->dispatch;
     }
 
-    public function setWareHouse(WareHouse $wareHouse): DeductDispatchedProducts
-    {
-        $this->wareHouse = $wareHouse;
 
-        return $this;
-    }
-
-    public function setStocksAndAmounts(array $stocksAndAmounts): DeductDispatchedProducts
+    public function setDispatch(Dispatch $dispatch): DeductDispatchedProducts
     {
-        $this->stocksAndAmounts = $stocksAndAmounts;
+        $this->dispatch = $dispatch;
 
         return $this;
     }
