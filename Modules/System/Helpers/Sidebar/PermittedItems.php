@@ -29,7 +29,6 @@ class PermittedItems
         }
         if (AuthHelper::make()->getUserType() === UserTypeEnum::WareHouse->name) {
             return [
-                'WareHouse',
                 'Settings',
                 'Dispatch',
                 'WaitingDispatches',

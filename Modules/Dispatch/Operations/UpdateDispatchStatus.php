@@ -7,6 +7,7 @@ use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\DispatchNotification\DispatchNotification;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\User\App\Helpers\AuthHelper;
 
 class UpdateDispatchStatus
 {
@@ -85,6 +86,8 @@ class UpdateDispatchStatus
         DispatchStatus::query()->create([
             'dispatch_id' => $this->getDispatch()->getKey(),
             'status'      => $this->getDispatchStatusEnum()->name,
+            'causer_type' => AuthHelper::make()->getUserType(),
+            'causer_id'   => AuthHelper::make()->getUserTypeId(),
         ]);
     }
 

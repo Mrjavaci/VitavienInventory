@@ -3,6 +3,7 @@
 namespace Modules\Dispatch\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Branch\App\Models\Branch;
 use Modules\System\Traits\HasDateFormat;
 use Modules\WareHouse\App\Models\WareHouse;
 
@@ -24,6 +25,10 @@ class Dispatch extends Model
     public function wareHouse()
     {
         return $this->hasOne(WareHouse::class, 'id', 'ware_house_id');
+    }
+    public function branch()
+    {
+        return $this->hasOne(Branch::class, 'id', 'branch_id');
     }
 
     public function getStocksAndAmounts()

@@ -5,19 +5,20 @@
 @endpushonce
 @section('title', "Adminlte3")
 @section("content")
-
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Inventory Detail Of {{$inventory['id']}}</h3>
+            <h3 class="card-title">Dispatch Detail Of {{$inventory['id']}}</h3>
         </div>
         <div class="card-body">
-
             <ul class="list-group">
                 <li class="list-group-item">
                     <strong>İD:</strong> {{ $inventory['id'] }}
                 </li>
                 <li class="list-group-item">
-                    <strong>WareHouse Name</strong> {{ $inventory['ware_house']['name'] }}
+                    <strong>From Name:</strong> {{ $inventory['ware_house']['name'] }}
+                </li>
+                <li class="list-group-item">
+                    <strong>To Name:</strong> {{ $inventory['branch']['name'] }}
                 </li>
                 <li class="list-group-item">
                     <strong>Created At:</strong> {{ $inventory['created_at'] }}
@@ -70,8 +71,10 @@
                 <thead>
                     <tr>
                         <th>Dispatch Status</th>
-                        <th>Created At:</th>
-                        <th>Updated At:</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Causer Type</th>
+                        <th>Causer Name</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,10 +83,32 @@
                             <td>{{ $item['status'] }}</td>
                             <td>{{ $item['created_at'] }}</td>
                             <td>{{ $item['updated_at'] }}</td>
+                            <td>{{ $item['causer_type'] }}</td>
+                            <td>{{ $item['causerDetails']['causer']['name'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Set New Status</h3>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('dispatch.status.change', ['id' => $inventory['id']]) }}" method="POST">
+                @csrf
+                <select name="status" id="status" class="form-control">
+                    @foreach($dispatchStatusEnums as $case)
+                        <option value="{{ $case->name }}" @if($case->name == collect($inventory['dispatch_statuses'])->last()['status'])
+                                                              selected
+                        @endif>{{ $case->name }}</option>
+                    @endforeach
+                </select>
+                <button type="submit" class="mt-2 btn btn-primary">Set Status</button>
+
+            </form>
 
         </div>
     </div>

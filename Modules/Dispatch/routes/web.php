@@ -19,3 +19,4 @@ Route::group([], function () {
 });
 
 Route::post('dispatch/approve', [DispatchController::class, 'approve'])->name('dispatch.approve');
+Route::post('dispatch/updateStatus/{id}', [DispatchController::class, 'statusUpdate'])->name('dispatch.status.change');

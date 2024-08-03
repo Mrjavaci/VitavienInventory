@@ -7,6 +7,7 @@ use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\User\App\Helpers\AuthHelper;
 use Modules\WareHouse\App\Models\WareHouse;
 
 class CreateDispatch
@@ -30,6 +31,8 @@ class CreateDispatch
         DispatchStatus::query()->create([
             'dispatch_id' => $this->dispatch->getKey(),
             'status'      => $this->dispatchStatusEnum->name,
+            'causer_type' => AuthHelper::make()->getUserType(),
+            'causer_id'   => AuthHelper::make()->getUserTypeId(),
         ]);
 
         return $this;

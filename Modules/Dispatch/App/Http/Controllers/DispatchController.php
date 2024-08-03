@@ -57,7 +57,16 @@ class DispatchController extends ApiCrud
             __FUNCTION__ => [
                 'function' => function (Builder $model) use ($request) {
                     $query = $model->orderByDesc('id');
-                    $query->where('branch_id', AuthHelper::make()->getUserTypeId());
+                    if (AuthHelper::make()->getUserType() === 'Branch') {
+                        $query->where('branch_id', AuthHelper::make()->getUserTypeId());
+
+                        return $query;
+                    }
+                    if (AuthHelper::make()->getUserType() === 'WareHouse') {
+                        $query->where('ware_house_id', AuthHelper::make()->getUserTypeId());
+
+                        return $query;
+                    }
 
                     return $query;
                 },
@@ -77,20 +86,27 @@ class DispatchController extends ApiCrud
         $this->overrideModelFunctions = [
             __FUNCTION__ => [
                 'function' => function (Builder $query) use ($resourceId) {
-                    $query->where('branch_id', AuthHelper::make()->getUserTypeId());
+                    if (AuthHelper::make()->getUserType() === 'Branch') {
+                        $query->where('branch_id', AuthHelper::make()->getUserTypeId());
+                    }
+                    if (AuthHelper::make()->getUserType() === 'WareHouse') {
+                        $query->where('ware_house_id', AuthHelper::make()->getUserTypeId());
+                    }
                     $query->where('id', $resourceId);
                     $query->orderByDesc('created_at');
-
+                    $query->with(['branch'])->without(['inventory']);
                     return $query;
                 },
             ],
         ];
 
         $data = parent::show($resourceId);
+
         $data['stocksAndAmounts'] = $this->normalizeStockAndAmounts(collect(json_decode($data['stocks_and_amounts'])));
 
         return view('dispatch::show', [
             'inventory' => $data,
+            'dispatchStatusEnums' => DispatchStatusEnum::cases()
         ]);
     }
 
