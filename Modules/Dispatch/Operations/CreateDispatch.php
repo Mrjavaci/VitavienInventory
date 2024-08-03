@@ -2,6 +2,7 @@
 
 namespace Modules\Dispatch\Operations;
 
+use Illuminate\Database\Eloquent\Model;
 use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
@@ -18,16 +19,16 @@ class CreateDispatch
 
     protected dispatchStatusEnum $dispatchStatusEnum;
 
-    protected Dispatch $dispatch;
+    protected Dispatch|Model $dispatch;
 
     public function create(): self
     {
-        $dispatch = $this->getBranch()->dispatches()->create([
+        $this->dispatch = $this->getBranch()->dispatches()->create([
             'ware_house_id'      => $this->getWareHouse()->getKey(),
             'stocks_and_amounts' => collect($this->getStocksAndAmounts())->toJson(),
         ]);
         DispatchStatus::query()->create([
-            'dispatch_id' => $dispatch->getKey(),
+            'dispatch_id' => $this->dispatch->getKey(),
             'status'      => $this->dispatchStatusEnum->name,
         ]);
 

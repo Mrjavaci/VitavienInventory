@@ -16,3 +16,4 @@ use Modules\User\App\Http\Controllers\UserController;
 
 Route::get('login', [UserController::class, 'index'])->name('login');
 Route::post('login', [UserController::class, 'login'])->name('login');
+Route::get('logout', [UserController::class, 'logout'])->name('logout');

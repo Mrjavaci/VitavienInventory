@@ -23,4 +23,12 @@ class UserController extends Controller
 
         return view('user::index', ['error' => 'Email or password is incorrect']);
     }
+
+    public function logout(Request $request)
+    {
+        auth()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login');
+    }
 }

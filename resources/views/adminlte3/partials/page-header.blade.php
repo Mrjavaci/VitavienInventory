@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>{{ $pageTitle ?? 'Panel' }}</h1>
+                <h1>{{ $pageTitle ??  \Illuminate\Support\Str::title(explode('.',  \Request::route()->getName())[0]) }}</h1>
             </div>
             @if(isset($breadcrumbs))
                 <div class="col-sm-6">
@@ -11,7 +11,7 @@
                         @foreach($breadcrumbs as $breadcrumb)
                             @if(isset($breadcrumb['url']) && !$loop->last)
                                 <li class="breadcrumb-item"><a
-                                        href="{{ $breadcrumb['url'] }}">{{ $breadcrumb['label'] }}</a></li>
+                                            href="{{ $breadcrumb['url'] }}">{{ $breadcrumb['label'] }}</a></li>
                             @else
                                 <li class="breadcrumb-item active">{{ $breadcrumb['label'] }}</li>
                             @endif
