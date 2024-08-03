@@ -70,8 +70,8 @@
             <table id="dispatchStatusChangeList" class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th>Dispatch Status</th>
                         <th>Created At</th>
+                        <th>Dispatch Status</th>
                         <th>Updated At</th>
                         <th>Causer Type</th>
                         <th>Causer Name</th>
@@ -80,8 +80,8 @@
                 <tbody>
                     @foreach($inventory['dispatch_statuses'] as $item)
                         <tr>
-                            <td>{{ $item['status'] }}</td>
                             <td>{{ $item['created_at'] }}</td>
+                            <td>{{ $item['status'] }}</td>
                             <td>{{ $item['updated_at'] }}</td>
                             <td>{{ $item['causer_type'] }}</td>
                             <td>{{ $item['causerDetails']['causer']['name'] }}</td>

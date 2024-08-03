@@ -2,13 +2,13 @@
 
 namespace Modules\Dispatch\Enums;
 
-enum DispatchStatusEnum
+enum DispatchStatusEnum:string
 {
-    case DispatchRequest;
-    case DispatchRequestApproved;
-    case Shipped;
-    case OnWay;
-    case Reached;
-    case Finished;
-    case Cancelled;
+    case DispatchRequest = 'DispatchRequest';
+    case DispatchRequestApproved = 'DispatchRequestApproved';
+    case Shipped = 'Shipped';
+    case OnWay = 'OnWay';
+    case Reached = 'Reached';
+    case Finished = 'Finished';
+    case Cancelled = 'Cancelled';
 }

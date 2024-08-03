@@ -130,6 +130,13 @@ class DispatchController extends ApiCrud
         return redirect()->route('dispatch.index');
     }
 
+    public function statusUpdate(Request $request,int $id)
+    {
+        DispatchOperations::make()
+            ->setDispatch(Dispatch::query()->find($id))
+            ->updateDispatch(DispatchStatusEnum::from($request->input('status')));
+        return redirect()->route('dispatch.show', $id);
+    }
     protected function normalizeStockAndAmounts(Collection $stockAndAmounts): Collection
     {
         return StockAndAmountNormalizer::make()->normalize($stockAndAmounts);
