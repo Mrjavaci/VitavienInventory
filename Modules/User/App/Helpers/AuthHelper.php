@@ -3,13 +3,11 @@
 namespace Modules\User\App\Helpers;
 
 use Illuminate\Support\Facades\Auth;
+use Modules\System\Traits\HasMake;
 
 class AuthHelper
 {
-    public static function make(): self
-    {
-        return app()->make(self::class);
-    }
+    use HasMake;
 
     public function isLogged(): bool
     {

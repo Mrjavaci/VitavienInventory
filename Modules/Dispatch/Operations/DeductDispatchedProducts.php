@@ -4,9 +4,12 @@ namespace Modules\Dispatch\Operations;
 
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Inventory\App\Models\Inventory;
+use Modules\System\Traits\HasMake;
 
 class DeductDispatchedProducts
 {
+    use HasMake;
+
     protected Dispatch $dispatch;
 
     protected array $stocksAndAmounts = [];
@@ -42,16 +45,10 @@ class DeductDispatchedProducts
         return $this->dispatch;
     }
 
-
     public function setDispatch(Dispatch $dispatch): DeductDispatchedProducts
     {
         $this->dispatch = $dispatch;
 
         return $this;
-    }
-
-    public static function make(): self
-    {
-        return app()->make(DeductDispatchedProducts::class);
     }
 }

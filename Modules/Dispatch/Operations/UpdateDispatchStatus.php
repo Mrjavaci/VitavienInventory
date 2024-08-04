@@ -7,10 +7,12 @@ use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\DispatchNotification\DispatchNotification;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\System\Traits\HasMake;
 use Modules\User\App\Helpers\AuthHelper;
 
 class UpdateDispatchStatus
 {
+    use HasMake;
     protected Dispatch $dispatch;
 
     protected DispatchStatusEnum $dispatchStatusEnum;
@@ -40,6 +42,7 @@ class UpdateDispatchStatus
 
         if ($this->getDispatchStatusEnum()->name === DispatchStatusEnum::Finished->name) {
             $this->createDispatchStatus();
+            $this->finishDispatchStatus();
             /**
              * @todo Create Finish dispatch
              */
@@ -76,10 +79,7 @@ class UpdateDispatchStatus
         return $this;
     }
 
-    public static function make(): self
-    {
-        return app()->make(self::class);
-    }
+
 
     protected function createDispatchStatus(): void
     {
@@ -122,5 +122,14 @@ class UpdateDispatchStatus
                             ->setDispatch($this->dispatch)
                             ->setDispatchStatusEnum($this->dispatchStatusEnum)
                             ->notify();
+    }
+
+    protected function finishDispatchStatus()
+    {
+        $this->createDispatchStatus();
+
+        IncreaseDispatchedProducts::make()
+                                  ->setDispatch($this->getDispatch())
+                                  ->increase();
     }
 }

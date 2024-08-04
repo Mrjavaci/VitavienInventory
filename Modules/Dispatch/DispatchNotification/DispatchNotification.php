@@ -4,10 +4,13 @@ namespace Modules\Dispatch\DispatchNotification;
 
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\System\Traits\HasMake;
 use NotificationChannels\Telegram\TelegramMessage;
 
 class DispatchNotification
 {
+    use HasMake;
+
     protected Dispatch $dispatch;
 
     protected DispatchStatusEnum $dispatchStatusEnum;
@@ -41,11 +44,6 @@ class DispatchNotification
         $this->dispatchStatusEnum = $dispatchStatusEnum;
 
         return $this;
-    }
-
-    public static function make(): self
-    {
-        return app()->make(self::class);
     }
 
     protected function notifyAdmin(): void

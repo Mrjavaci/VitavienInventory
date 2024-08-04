@@ -8,10 +8,13 @@ use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\DispatchNotification\DispatchNotification;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\System\Traits\HasMake;
 use Modules\WareHouse\App\Models\WareHouse;
 
 class DispatchOperations
 {
+    use HasMake;
+
     protected array $stocksAndAmounts = [];
 
     protected Branch $branch;
@@ -114,10 +117,5 @@ class DispatchOperations
         $this->error = $error;
 
         return $this;
-    }
-
-    public static function make(): self
-    {
-        return app()->make(DispatchOperations::class);
     }
 }

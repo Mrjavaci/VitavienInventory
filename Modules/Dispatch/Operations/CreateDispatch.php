@@ -7,11 +7,14 @@ use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\System\Traits\HasMake;
 use Modules\User\App\Helpers\AuthHelper;
 use Modules\WareHouse\App\Models\WareHouse;
 
 class CreateDispatch
 {
+    use HasMake;
+
     protected array $stocksAndAmounts = [];
 
     protected Branch $branch;
@@ -84,10 +87,5 @@ class CreateDispatch
         $this->dispatchStatusEnum = $dispatchStatus;
 
         return $this;
-    }
-
-    public static function make(): self
-    {
-        return app()->make(CreateDispatch::class);
     }
 }
