@@ -32,7 +32,7 @@ class TableHelper
 
         $dataRows = collect($this->mainData)->map(fn($row) => '| '.collect($row)->map(fn($value, $key) => str_pad($value, $columnWidths[$key]))->implode(' | ').' |')->implode("\n");
 
-        return $separatorLine."\n".$headerRow."\n".$separatorLine."\n".$dataRows."\n".$separatorLine;
+        return "```\n".$separatorLine."\n".$headerRow."\n".$separatorLine."\n".$dataRows."\n".$separatorLine."\n```";
     }
 
     public function getHeaders(): array

@@ -20,7 +20,7 @@ class DispatchNotification
 
     public function notify()
     {
-        $this->notifyAdmin();
+        $this->notifyMasterGroup();
 
         return $this;
     }
@@ -49,7 +49,7 @@ class DispatchNotification
         return $this;
     }
 
-    protected function notifyAdmin(): void
+    protected function notifyMasterGroup(): void
     {
         TelegramMessage::create()
                        ->to(config('services.telegram-bot-api.master-group-id'))
@@ -62,7 +62,7 @@ class DispatchNotification
         $dispatchStatus = $this->dispatch->dispatchStatuses()->get()->last();
 
         if ($this->dispatchStatusEnum->name === DispatchStatusEnum::Finished->name) {
-            return $this->makeStockAndAmountsTable()."\n".$this->getContent($dispatchStatus);
+            return $this->makeStockAndAmountsTable()."\n\n".$this->getContent($dispatchStatus);
         }
 
         return $this->getContent($dispatchStatus);
