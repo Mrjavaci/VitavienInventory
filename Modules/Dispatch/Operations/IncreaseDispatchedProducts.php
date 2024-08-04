@@ -17,12 +17,12 @@ class IncreaseDispatchedProducts
     public function increase(): \Illuminate\Support\Collection
     {
         $operationalizedInventories = collect();
-        foreach ($this->getStocksAndAmounts() as $deductAmount => $id) {
+        collect($this->getStocksAndAmounts())->each(function ($id, $amount) use (&$operationalizedInventories) {
             $inventory = Inventory::query()->where('id', $id)->first();
-            $inventory->amount += $deductAmount;
+            $inventory->amount += $amount;
             $inventory->save();
             $operationalizedInventories->push($inventory);
-        }
+        });
 
         return $operationalizedInventories;
     }

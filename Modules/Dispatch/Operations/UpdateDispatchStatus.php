@@ -41,16 +41,22 @@ class UpdateDispatchStatus
 
         if ($this->getDispatchStatusEnum()->name === DispatchStatusEnum::DispatchRequestApproved->name) {
             $this->dispatchRequestApproved();
+            $this->makeDispatchNotification();
 
             return;
         }
 
         if ($this->getDispatchStatusEnum()->name === DispatchStatusEnum::Finished->name) {
-            $this->createDispatchStatus();
-            $this->finishDispatchStatus();
-            /**
-             * @todo Create Finish dispatch
-             */
+            DB::beginTransaction();
+            try {
+                $this->createDispatchStatus();
+                $this->finishDispatchStatus();
+                $this->makeFinishDispatchNotification();
+            } catch (\Exception $exception) {
+                DB::rollBack();
+                dd($exception->getMessage());
+            }
+            DB::commit();
         }
         if ($this->getDispatchStatusEnum()->name === DispatchStatusEnum::Cancelled->name) {
             $this->createDispatchStatus();
@@ -103,8 +109,6 @@ class UpdateDispatchStatus
             DeductDispatchedProducts::make()
                                     ->setDispatch($this->getDispatch())
                                     ->deduct();
-
-            $this->makeDispatchNotification();
         } catch (\Exception $exception) {
             DB::rollBack();
             throw new $exception;
@@ -129,13 +133,9 @@ class UpdateDispatchStatus
 
     protected function finishDispatchStatus(): self
     {
-        $this->createDispatchStatus();
-
         IncreaseDispatchedProducts::make()
                                   ->setDispatch($this->getDispatch())
                                   ->increase();
-
-        $this->makeFinishDispatchNotification();
 
         return $this;
     }
@@ -164,6 +164,5 @@ class UpdateDispatchStatus
         if ($searchCurrent < $searchLast) {
             throw new \Exception('Dispatch status is not valid');
         }
-
     }
 }
