@@ -82,136 +82,138 @@
     })
 
     $('.selectWareHouse').on('change', function () {
-        let warehouseId = $('.selectWareHouse').val()
-        let wareHouse = warehouseList.find(warehouse => warehouse['id'] === parseInt(warehouseId))
+    let warehouseId = $('.selectWareHouse').val()
+    let wareHouse = warehouseList.find(warehouse => warehouse['id'] === parseInt(warehouseId))
 
-        let table = $('#stocksAndAmounts').DataTable()
-        table.clear()
-        if (wareHouse['inventory'].length === 0) {
+    let table = $('#stocksAndAmounts').DataTable()
+    table.clear()
+    if (wareHouse['inventory'].length === 0) {
 
-            Toast.fire({
-                icon: 'error',
-                title: 'No Stock Found'
-            })
-            return
-        }
+    Toast.fire({
+    icon: 'error',
+    title: 'No Stock Found'
+    })
+    return
+    }
 
-        wareHouse['inventory'].forEach(inventory => {
-            $('.selectStock').append(`<option value="${inventory['stock'][0]['id']}">${inventory['stock'][0]['name']}</option>`)
-        })
+    wareHouse['inventory'].forEach(inventory => {
+    $('.selectStock').append(`
+    <option value="${inventory['stock'][0]['id']}">${inventory['stock'][0]['name']}</option>`)
+    })
 
     })
 
     $('.amount').on('input', function () {
 
-        if ($('input[name="amount"]').val() === '') {
-            return
-        }
-        let stockId = $('.selectStock').val()
-        let wareHouseId = $('.selectWareHouse').val()
-        let wareHouse = warehouseList.find(warehouse => warehouse['id'] === parseInt(wareHouseId))
-        let amount = parseInt($('input[name="amount"]').val())
-        if (isNaN(amount)) {
-            Toast.fire({
-                icon: 'error',
-                title: 'Invalid Amount'
-            })
-            $('input[name="amount"]').val(0)
+    if ($('input[name="amount"]').val() === '') {
+    return
+    }
+    let stockId = $('.selectStock').val()
+    let wareHouseId = $('.selectWareHouse').val()
+    let wareHouse = warehouseList.find(warehouse => warehouse['id'] === parseInt(wareHouseId))
+    let amount = parseInt($('input[name="amount"]').val())
+    if (isNaN(amount)) {
+    Toast.fire({
+    icon: 'error',
+    title: 'Invalid Amount'
+    })
+    $('input[name="amount"]').val(0)
 
-            return
-        }
+    return
+    }
 
-        wareHouse['inventory'].forEach(inventory => {
-            if (inventory['stock'][0]['id'] === parseInt(stockId)) {
-                if ((inventory['amount'] - amount) < 0) {
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Stock Not Available'
-                    })
-                    $('input[name="amount"]').val(0)
-                    return
-                }
-                selectedInventory = inventory
-                let html = `<p>Unit: ${inventory['stock'][0]['stock_unit']['name']}</p>`
-                html += `<p>Total Amount: ${inventory['amount']}</p>`
-                html += `<p>Remaining Amount After Dispatch: ${inventory['amount'] - amount}</p>`
+    wareHouse['inventory'].forEach(inventory => {
+    if (inventory['stock'][0]['id'] === parseInt(stockId)) {
+    if ((inventory['amount'] - amount) < 0) {
+    Toast.fire({
+    icon: 'error',
+    title: 'Stock Not Available'
+    })
+    $('input[name="amount"]').val(0)
+    return
+    }
+    selectedInventory = inventory
+    let html = `<p>Unit: ${inventory['stock'][0]['stock_unit']['name']}</p>`
+    html += `<p>Total Amount: ${inventory['amount']}</p>`
+    html += `<p>Remaining Amount After Dispatch: ${inventory['amount'] - amount}</p>`
 
-                $('.stockInfo').html(html)
-            }
-        })
+    $('.stockInfo').html(html)
+    }
+    })
     })
 
     function formToJson(formData) {
-        const json = {}
-        $.each(formData, function () {
-            json[this.name] = this.value
-        })
-        return json
+    const json = {}
+    $.each(formData, function () {
+    json[this.name] = this.value
+    })
+    return json
     }
     $('.dispatchStoreForm').on('submit', function (e) {
 
-        e.preventDefault()
-        let form = $(this)
-        let formData = form.serializeArray()
-        let baseJson = formToJson(formData)
-        baseJson['stocksAndAmounts'] = JSON.stringify($('#stocksAndAmounts').DataTable().rows().data().toArray())
-        $.ajax({
-            url: form.attr('action'),
-            method: form.attr('method'),
-            contentType: 'application/json',
-            dataType: 'json',
-            data: JSON.stringify(baseJson),
-            success: function (response) {
+    e.preventDefault()
+    let form = $(this)
+    let formData = form.serializeArray()
+    let baseJson = formToJson(formData)
+    baseJson['stocksAndAmounts'] = JSON.stringify($('#stocksAndAmounts').DataTable().rows().data().toArray())
+    $.ajax({
+    url: form.attr('action'),
+    method: form.attr('method'),
+    contentType: 'application/json',
+    dataType: 'json',
+    data: JSON.stringify(baseJson),
+    success: function (response) {
 
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Dispatched'
-                })
-                setTimeout(() => {
-                    //  location.href = "{{ route('dispatch.index') }}"
-                }, 3000)
-            }
-        })
+    Toast.fire({
+    icon: 'success',
+    title: 'Dispatched'
+    })
+    setTimeout(() => {
+    //  location.href = "{{ route('dispatch.index') }}"
+    }, 3000)
+    }
+    })
     })
 
     $('.addShipping').on('click', function () {
 
-        let stockId = $('.selectStock').val()
-        let amount = $('input[name="amount"]').val()
+    let stockId = $('.selectStock').val()
+    let amount = $('input[name="amount"]').val()
 
-        let table = $('#stocksAndAmounts').DataTable()
+    let table = $('#stocksAndAmounts').DataTable()
 
-        table.row.add([
-            stockId,
-            selectedInventory['stock'][0]['name'],
-            amount,
-            selectedInventory['amount'],
-            selectedInventory['amount'] - amount,
-            `<div class="btn btn-danger removeRow">Remove</div>`
-        ]).draw()
+    table.row.add([
+    stockId,
+    selectedInventory['stock'][0]['name'],
+    amount,
+    selectedInventory['amount'],
+    selectedInventory['amount'] - amount,
+    `
+    <div class="btn btn-danger removeRow">Remove</div>`
+    ]).draw()
     })
 
     $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        error: handleError,
+    headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    error: handleError,
     })
     $(document).on('click', '.removeRow', function () {
-        console.log('removeRow')
-        let table = $('#stocksAndAmounts').DataTable()
-        table.row($(this).parents('tr')).remove().draw()
+    console.log('removeRow')
+    let table = $('#stocksAndAmounts').DataTable()
+    table.row($(this).parents('tr')).remove().draw()
     })
 
     function handleError(error) {
-        let response = JSON.parse(error.responseText)
-        let errorMessage = response.message
-        Toast.fire(
-            {
-                icon: 'error',
-                title: errorMessage
-            }
-        )
+    let response = JSON.parse(error.responseText)
+    let errorMessage = response.message
+    Toast.fire(
+    {
+    icon: 'error',
+    title: errorMessage
+    }
+    )
     }
 
     </script>

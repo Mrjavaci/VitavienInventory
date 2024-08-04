@@ -13,6 +13,7 @@ use Modules\User\App\Helpers\AuthHelper;
 class UpdateDispatchStatus
 {
     use HasMake;
+
     protected Dispatch $dispatch;
 
     protected DispatchStatusEnum $dispatchStatusEnum;
@@ -22,6 +23,10 @@ class UpdateDispatchStatus
      */
     public function update(): void
     {
+        $this->checkOrder();
+
+        $this->checkAlreadyUpdated();
+
         $justCreateEnums = [
             DispatchStatusEnum::DispatchRequest->name,
             DispatchStatusEnum::Shipped->name,
@@ -65,7 +70,7 @@ class UpdateDispatchStatus
         return $this->dispatchStatusEnum;
     }
 
-    public function setDispatch(Dispatch $dispatch): UpdateDispatchStatus
+    public function setDispatch(Dispatch $dispatch): self
     {
         $this->dispatch = $dispatch;
 
@@ -78,8 +83,6 @@ class UpdateDispatchStatus
 
         return $this;
     }
-
-
 
     protected function createDispatchStatus(): void
     {
@@ -124,12 +127,43 @@ class UpdateDispatchStatus
                             ->notify();
     }
 
-    protected function finishDispatchStatus()
+    protected function finishDispatchStatus(): self
     {
         $this->createDispatchStatus();
 
         IncreaseDispatchedProducts::make()
                                   ->setDispatch($this->getDispatch())
                                   ->increase();
+
+        $this->makeFinishDispatchNotification();
+
+        return $this;
+    }
+
+    protected function makeFinishDispatchNotification()
+    {
+        DispatchNotification::make()
+                            ->setDispatch($this->dispatch)
+                            ->setDispatchStatusEnum($this->dispatchStatusEnum)
+                            ->notify();
+    }
+
+    protected function checkAlreadyUpdated(): void
+    {
+        if ($this->getDispatch()->dispatchStatuses()->get()->last()->status === $this->getDispatchStatusEnum()->name) {
+            throw new \Exception('Dispatch status is already updated');
+        }
+    }
+
+    protected function checkOrder()
+    {
+        $allStatutes = collect(DispatchStatusEnum::cases())->map(fn($item) => $item->name);
+        $searchCurrent = $allStatutes->search($this->dispatchStatusEnum->name);
+        $searchLast = $allStatutes->search($this->getDispatch()->dispatchStatuses()->get()->last()->status);
+
+        if ($searchCurrent < $searchLast) {
+            throw new \Exception('Dispatch status is not valid');
+        }
+
     }
 }

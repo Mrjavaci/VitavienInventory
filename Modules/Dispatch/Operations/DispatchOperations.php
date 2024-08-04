@@ -51,10 +51,14 @@ class DispatchOperations
 
     public function updateDispatch(DispatchStatusEnum $dispatchStatusEnum): self
     {
-        UpdateDispatchStatus::make()
-                            ->setDispatch($this->getDispatch())
-                            ->setDispatchStatusEnum($dispatchStatusEnum)
-                            ->update();
+        try {
+            UpdateDispatchStatus::make()
+                                ->setDispatch($this->getDispatch())
+                                ->setDispatchStatusEnum($dispatchStatusEnum)
+                                ->update();
+        } catch (\Exception $exception) {
+            $this->error = $exception->getMessage();
+        }
 
         return $this;
     }

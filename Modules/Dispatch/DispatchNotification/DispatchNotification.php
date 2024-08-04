@@ -4,6 +4,9 @@ namespace Modules\Dispatch\DispatchNotification;
 
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\Stock\App\Models\StockUnit;
+use Modules\System\Helpers\StockAndAmountNormalizer;
+use Modules\System\Helpers\Table\TableHelper;
 use Modules\System\Traits\HasMake;
 use NotificationChannels\Telegram\TelegramMessage;
 
@@ -58,6 +61,30 @@ class DispatchNotification
     {
         $dispatchStatus = $this->dispatch->dispatchStatuses()->get()->last();
 
+        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::Finished->name) {
+            return $this->makeStockAndAmountsTable()."\n".$this->getContent($dispatchStatus);
+        }
+
+        return $this->getContent($dispatchStatus);
+    }
+
+    protected function getCreatedOrUpdated()
+    {
+        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::DispatchRequest->name) {
+            return 'requested';
+        }
+        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::DispatchRequestApproved->name) {
+            return 'approved';
+        }
+        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::Cancelled->name) {
+            return 'cancelled';
+        }
+
+        return 'updated';
+    }
+
+    protected function getContent($dispatchStatus): string
+    {
         return sprintf(
             "*[Dispatch](%s) is %s
             New Status: %s
@@ -70,21 +97,25 @@ class DispatchNotification
         );
     }
 
-    protected function getCreatedOrUpdated()
+    protected function makeStockAndAmountsTable(): string
     {
-        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::DispatchRequest->name) {
-            return 'requested';
-        }
-        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::DispatchRequestApproved->name) {
-            return 'approved';
-        }
-        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::Finished->name) {
-            return 'finished';
-        }
-        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::Cancelled->name) {
-            return 'cancelled';
+        $normalized = StockAndAmountNormalizer::make()
+                                              ->normalize(collect($this->dispatch->getStocksAndAmounts()))
+                                              ->map(function ($stockAndAmount) {
+                                                  $stockAndAmount['stock'] = $stockAndAmount['stock']->name
+                                                      .' - '.
+                                                      StockUnit::query()->find($stockAndAmount['stock']->stock_unit_id)->name;
+
+                                                  return $stockAndAmount;
+                                              })->toArray();
+        $forTable = [];
+        foreach ($normalized as $item) {
+            $forTable[] = $item;
         }
 
-        return 'updated';
+        return TableHelper::make()
+                          ->setMainData($forTable)
+                          ->setHeaders(['Amount', 'Stock'])
+                          ->generate();
     }
 }

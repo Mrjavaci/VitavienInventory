@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Redirect;
 use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
@@ -25,6 +26,18 @@ class DispatchController extends ApiCrud
                           ->setWareHouse(WareHouse::query()->where('id', AuthHelper::make()->getUserTypeId())->first())
                           ->setDispatch(Dispatch::query()->find($request->input('id')))
                           ->updateDispatch(DispatchStatusEnum::DispatchRequestApproved);
+    }
+
+    public function statusUpdate(Request $request, int $id)
+    {
+        $operation = DispatchOperations::make()
+                                       ->setDispatch(Dispatch::query()->find($id))
+                                       ->updateDispatch(DispatchStatusEnum::from($request->input('status')));
+        if (! empty($operation->getError())) {
+            return redirect()->route('dispatch.show',$id)->withErrors(['error' => $operation->getError()]);
+        }
+
+        return redirect()->route('dispatch.show', $id);
     }
 
     public function create()
@@ -95,6 +108,7 @@ class DispatchController extends ApiCrud
                     $query->where('id', $resourceId);
                     $query->orderByDesc('created_at');
                     $query->with(['branch'])->without(['inventory']);
+
                     return $query;
                 },
             ],
@@ -105,8 +119,8 @@ class DispatchController extends ApiCrud
         $data['stocksAndAmounts'] = $this->normalizeStockAndAmounts(collect(json_decode($data['stocks_and_amounts'])));
 
         return view('dispatch::show', [
-            'inventory' => $data,
-            'dispatchStatusEnums' => DispatchStatusEnum::cases()
+            'inventory'           => $data,
+            'dispatchStatusEnums' => DispatchStatusEnum::cases(),
         ]);
     }
 
@@ -130,13 +144,6 @@ class DispatchController extends ApiCrud
         return redirect()->route('dispatch.index');
     }
 
-    public function statusUpdate(Request $request,int $id)
-    {
-        DispatchOperations::make()
-            ->setDispatch(Dispatch::query()->find($id))
-            ->updateDispatch(DispatchStatusEnum::from($request->input('status')));
-        return redirect()->route('dispatch.show', $id);
-    }
     protected function normalizeStockAndAmounts(Collection $stockAndAmounts): Collection
     {
         return StockAndAmountNormalizer::make()->normalize($stockAndAmounts);

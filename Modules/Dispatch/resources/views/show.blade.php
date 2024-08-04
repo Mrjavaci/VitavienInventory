@@ -102,8 +102,8 @@
                 <select name="status" id="status" class="form-control">
                     @foreach($dispatchStatusEnums as $case)
                         <option value="{{ $case->name }}" @if($case->name == collect($inventory['dispatch_statuses'])->last()['status'])
-                                                              selected
-                        @endif>{{ $case->name }}</option>
+                            selected
+                            @endif>{{ $case->name }}</option>
                     @endforeach
                 </select>
                 <button type="submit" class="mt-2 btn btn-primary">Set Status</button>
@@ -136,6 +136,18 @@
             'autoWidth': false,
             'responsive': true,
         })
+
+        @if($errors->any())
+        Swal.mixin({
+            toast: false,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000
+        }).fire({
+            icon: 'error',
+            title: '{{ $errors->first() }}'
+        })
+        @endif
     })
     </script>
 @endpushonce
