@@ -100,6 +100,8 @@ class UpdateDispatchStatus
             DeductDispatchedProducts::make()
                                     ->setDispatch($this->getDispatch())
                                     ->deduct();
+
+            $this->makeDispatchNotification();
         } catch (\Exception $exception) {
             DB::rollBack();
             throw new $exception;
@@ -110,6 +112,12 @@ class UpdateDispatchStatus
     protected function dispatchJustCreate(): void
     {
         $this->createDispatchStatus();
+
+        $this->makeDispatchNotification();
+    }
+
+    protected function makeDispatchNotification(): void
+    {
         DispatchNotification::make()
                             ->setDispatch($this->dispatch)
                             ->setDispatchStatusEnum($this->dispatchStatusEnum)

@@ -35,4 +35,5 @@ class Dispatch extends Model
     {
         return json_decode($this->stocks_and_amounts, true);
     }
+
 }
