@@ -3,7 +3,7 @@
 <head>
     @include('adminlte3.utils.head')
 </head>
-<body>
+<body class="dark-mode">
     <div class="wrapper">
         @include('adminlte3.partials.header')
         @include('adminlte3.partials.main-sidebar')

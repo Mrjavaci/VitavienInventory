@@ -3,7 +3,9 @@
 namespace Modules\Dispatch\DispatchNotification;
 
 use Modules\Dispatch\App\Models\Dispatch;
+use Modules\Dispatch\App\Models\DispatchStatus;
 use Modules\Dispatch\Enums\DispatchStatusEnum;
+use Modules\Notification\Helpers\NotificationHelper;
 use Modules\Stock\App\Models\StockUnit;
 use Modules\System\Helpers\StockAndAmountNormalizer;
 use Modules\System\Helpers\Table\TableHelper;
@@ -18,9 +20,12 @@ class DispatchNotification
 
     protected DispatchStatusEnum $dispatchStatusEnum;
 
+    protected DispatchStatus $dispatchStatus;
+
     public function notify()
     {
-        $this->notifyMasterGroup();
+        $this->notifyTelegramMasterGroup($this->createContent());
+        $this->notifyLocal($this->createContent(true));
 
         return $this;
     }
@@ -49,19 +54,19 @@ class DispatchNotification
         return $this;
     }
 
-    protected function notifyMasterGroup(): void
+    protected function notifyTelegramMasterGroup($content): void
     {
         TelegramMessage::create()
                        ->to(config('services.telegram-bot-api.master-group-id'))
-                       ->content($this->createContent())
+                       ->content($content)
                        ->send();
     }
 
-    protected function createContent(): string
+    protected function createContent($isLocal = false): string
     {
         $dispatchStatus = $this->dispatch->dispatchStatuses()->get()->last();
 
-        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::Finished->name) {
+        if ($this->dispatchStatusEnum->name === DispatchStatusEnum::Finished->name && !$isLocal) {
             return $this->makeStockAndAmountsTable()."\n\n".$this->getContent($dispatchStatus);
         }
 
@@ -117,5 +122,17 @@ class DispatchNotification
                           ->setMainData($forTable)
                           ->setHeaders(['Amount', 'Stock'])
                           ->generate();
+    }
+
+    protected function notifyLocal(string $content)
+    {
+        $dispatchStatus = $this->dispatch->dispatchStatuses()->get()->last();
+        NotificationHelper::make()
+                          ->setContent($content)
+                          ->setTitle('Dispatch Status')
+                          ->setTargetType($dispatchStatus->causer_type)
+                          ->setTargetId($dispatchStatus->causer_id)
+                          ->setTargetUrl(route('dispatch.show', $this->dispatch->id))
+                          ->notify();
     }
 }
