@@ -17,9 +17,5 @@ class WareHouseDatabaseSeeder extends Seeder
             'location' => 'Location 1',
         ]);
 
-        WareHouse::query()->create([
-            'name'     => 'Warehouse 2',
-            'location' => 'Location 2',
-        ]);
     }
 }

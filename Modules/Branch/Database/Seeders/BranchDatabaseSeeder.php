@@ -12,18 +12,17 @@ class BranchDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
         Branch::query()->create([
-            'name'    => 'Main Branch',
+            'name'    => 'Kumburgaz Şube',
             'address' => 'Main Branch Address',
-            'phone'   => 'Main Branch Phone',
-            'email'   => 'Main Branch Email',
+            'phone'   => '+90214124124124',
+            'email'   => 'kumburgaz@kumburgaz.com',
         ]);
         Branch::query()->create([
-            'name'    => 'Another Branch',
-            'address' => 'Another Branch Address',
-            'phone'   => 'Another Branch Phone',
-            'email'   => 'Another Branch Email',
+            'name'    => 'Silivri Şube',
+            'address' => 'Silivri Şube Address',
+            'phone'   => '+90214124124124',
+            'email'   => 'silivri@silivri.com',
         ]);
     }
 }

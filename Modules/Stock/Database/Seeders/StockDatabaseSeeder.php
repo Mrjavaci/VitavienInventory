@@ -17,23 +17,27 @@ class StockDatabaseSeeder extends Seeder
             'name' => 'Kilogram',
         ]);
         $piece = StockUnit::query()->create([
-            'name' => 'Piece',
+            'name' => 'Adet',
         ]);
         $liter = StockUnit::query()->create([
-            'name' => 'Liter',
+            'name' => 'Litre',
         ]);
 
         Stock::query()->create([
-            'name'          => 'Apple',
+            'name'          => 'Elma',
             'stock_unit_id' => $piece->id,
         ]);
         Stock::query()->create([
-            'name'          => 'Milk',
+            'name'          => 'Süt',
             'stock_unit_id' => $liter->id,
         ]);
         Stock::query()->create([
-            'name'          => 'chocolate',
+            'name'          => 'Kahve',
             'stock_unit_id' => $kilogram->id,
+        ]);
+        Stock::query()->create([
+            'name'          => '50 Ml Su',
+            'stock_unit_id' => $piece->id,
         ]);
     }
 }

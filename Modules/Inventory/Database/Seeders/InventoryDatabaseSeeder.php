@@ -16,9 +16,15 @@ class InventoryDatabaseSeeder extends Seeder
     {
         Inventory::query()->create([
             'InventoryType' => class_basename(WareHouse::class),
-            'inventory_id'  => 2,
+            'inventory_id'  => 1,
             'stock_id'      => 1,
             'amount'        => 10,
+        ]);
+        Inventory::query()->create([
+            'InventoryType' => class_basename(WareHouse::class),
+            'inventory_id'  => 1,
+            'stock_id'      => 3,
+            'amount'        => 50,
         ]);
 
         Inventory::query()->create([
@@ -26,6 +32,12 @@ class InventoryDatabaseSeeder extends Seeder
             'inventory_id'  => 1,
             'stock_id'      => 2,
             'amount'        => 20,
+        ]);
+        Inventory::query()->create([
+            'InventoryType' => class_basename(Branch::class),
+            'inventory_id'  => 1,
+            'stock_id'      => 4,
+            'amount'        => 60,
         ]);
     }
 }

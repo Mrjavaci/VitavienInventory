@@ -20,7 +20,7 @@ class Branch extends Model
 
     public function inventory()
     {
-        return $this->hasMany(Inventory::class, 'inventory_id', 'id');
+        return $this->hasMany(Inventory::class, 'inventory_id', 'id')->where('InventoryType','Branch');
     }
 
     public function dispatches()
