@@ -5,6 +5,7 @@ namespace Modules\Dispatch\Operations;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Inventory\App\Models\Inventory;
 use Modules\System\Traits\HasMake;
+use Modules\User\App\Helpers\AuthHelper;
 
 class IncreaseDispatchedProducts
 {
@@ -18,7 +19,10 @@ class IncreaseDispatchedProducts
     {
         $operationalizedInventories = collect();
         collect($this->getStocksAndAmounts())->each(function ($id, $amount) use (&$operationalizedInventories) {
-            $inventory = Inventory::query()->where('id', $id)->first();
+            $inventory = Inventory::query()
+                                  ->where('InventoryType', AuthHelper::make()->getUserType())
+                                  ->where('inventory_id', AuthHelper::make()->getUserTypeId())
+                                  ->where('stock_id', $id)->first();
             $inventory->amount += $amount;
             $inventory->save();
             $operationalizedInventories->push($inventory);
