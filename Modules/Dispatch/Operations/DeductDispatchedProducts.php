@@ -5,6 +5,7 @@ namespace Modules\Dispatch\Operations;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Inventory\App\Models\Inventory;
 use Modules\System\Traits\HasMake;
+use Modules\User\App\Helpers\AuthHelper;
 
 class DeductDispatchedProducts
 {
@@ -21,8 +22,11 @@ class DeductDispatchedProducts
     {
         $operationalizedInventories = collect();
         foreach ($this->getStocksAndAmounts() as $deductAmount => $id) {
-            $inventory = Inventory::query()->where('id', $id)->first();
-            $inventoryAmount = $inventory->amount;
+            $inventory = Inventory::query()
+                                  ->where('InventoryType', AuthHelper::make()->getUserType())
+                                  ->where('inventory_id', AuthHelper::make()->getUserTypeId())
+                                  ->where('stock_id', $id)->first();
+            $inventoryAmount = (int)$inventory->amount;
             if ($inventory->amount < 0 || $inventory->amount == 0 || ($inventoryAmount - $deductAmount) < 0) {
                 throw new \Exception('Inventory amount is not enough');
             }

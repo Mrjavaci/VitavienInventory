@@ -111,7 +111,7 @@ class UpdateDispatchStatus
                                     ->deduct();
         } catch (\Exception $exception) {
             DB::rollBack();
-            throw new $exception;
+            throw $exception;
         }
         DB::commit();
     }

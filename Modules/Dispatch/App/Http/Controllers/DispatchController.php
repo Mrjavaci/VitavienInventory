@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Redirect;
 use Modules\Branch\App\Models\Branch;
 use Modules\Dispatch\App\Models\Dispatch;
 use Modules\Dispatch\App\Models\DispatchStatus;
@@ -22,10 +21,17 @@ class DispatchController extends ApiCrud
 {
     public function approve(Request $request)
     {
-        DispatchOperations::make()
-                          ->setWareHouse(WareHouse::query()->where('id', AuthHelper::make()->getUserTypeId())->first())
-                          ->setDispatch(Dispatch::query()->find($request->input('id')))
-                          ->updateDispatch(DispatchStatusEnum::DispatchRequestApproved);
+        $dispatchOp = DispatchOperations::make()
+                                        ->setWareHouse(WareHouse::query()->where('id', AuthHelper::make()->getUserTypeId())->first())
+                                        ->setDispatch(Dispatch::query()->find($request->input('id')))
+                                        ->updateDispatch(DispatchStatusEnum::DispatchRequestApproved);
+
+        if (! empty($dispatchOp->getError())) {
+            return response()->json([
+                'error' => $dispatchOp->getError(),
+            ]);
+        }
+        return response()->json(['status' => 'success']);
     }
 
     public function statusUpdate(Request $request, int $id)
@@ -34,7 +40,7 @@ class DispatchController extends ApiCrud
                                        ->setDispatch(Dispatch::query()->find($id))
                                        ->updateDispatch(DispatchStatusEnum::from($request->input('status')));
         if (! empty($operation->getError())) {
-            return redirect()->route('dispatch.show',$id)->withErrors(['error' => $operation->getError()]);
+            return redirect()->route('dispatch.show', $id)->withErrors(['error' => $operation->getError()]);
         }
 
         return redirect()->route('dispatch.show', $id);
