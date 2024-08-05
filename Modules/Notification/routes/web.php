@@ -14,6 +14,8 @@ use Modules\Notification\App\Http\Controllers\NotificationController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('notification', NotificationController::class)->names('notification');
-});
+//Route::group([], function () {
+//    Route::resource('notification', NotificationController::class)->names('notification');
+//});
+
+Route::post('notification/setSeen', [NotificationController::class, 'setSeen'])->name('notification.set-seen');

@@ -23,7 +23,7 @@
                 <span class="dropdown-item dropdown-header">{{NotificationHelper::getNotificationCount()}} Notifications</span>
                 <div class="dropdown-divider"></div>
                 @foreach(NotificationHelper::getNotifications() as $notification)
-                    <a href="{{ $notification->getTargetUrl() }}" class="dropdown-item">
+                    <a href="{{ $notification->getTargetUrl() }}" target="_blank" class="dropdown-item setSeen" data-id="{{$notification->id}}">
                         <i class="fas fa-info-circle mr-2"></i>{{$notification->getTitle()}} - {!! strip_tags(Str::markdown($notification->getContent())) !!}
                         <span class="float-right text-muted text-sm"> {{ \Carbon\Carbon::make($notification->created_at)->diffForHumans() }}</span>
                     </a>
@@ -45,6 +45,30 @@
 
     </ul>
 </nav>
+
+@pushonce('scripts')
+    <script>
+
+    $('.setSeen').click(function () {
+        $(this).parent().remove()
+        console.log('id', $(this).data('id'))
+        $.ajax({
+            method: 'POST',
+            url: '{{ route('notification.set-seen') }}',
+            data: {
+                _token: '{{ csrf_token() }}',
+                id: $(this).data('id')
+            },
+            success: function (data) {
+                console.log(data)
+            }
+        })
+    })
+
+    </script>
+
+@endpushonce
+
 <!-- /.navbar -->
 <style>
     a.dropdown-item {
