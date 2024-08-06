@@ -19,13 +19,23 @@ class IncreaseDispatchedProducts
     {
         $operationalizedInventories = collect();
         collect($this->getStocksAndAmounts())->each(function ($id, $amount) use (&$operationalizedInventories) {
-            $inventory = Inventory::query()
-                                  ->where('InventoryType', AuthHelper::make()->getUserType())
-                                  ->where('inventory_id', AuthHelper::make()->getUserTypeId())
-                                  ->where('stock_id', $id)->first();
-            $inventory->amount += $amount;
-            $inventory->save();
-            $operationalizedInventories->push($inventory);
+            if ($inventory = Inventory::query()
+                                      ->where('InventoryType', AuthHelper::make()->getUserType())
+                                      ->where('inventory_id', AuthHelper::make()->getUserTypeId())
+                                      ->where('stock_id', $id)->first()) {
+                $inventory->amount += $amount;
+                $inventory->save();
+                $operationalizedInventories->push($inventory);
+
+                return;
+            }
+
+            $operationalizedInventories->push(Inventory::query()->create([
+                'InventoryType' => AuthHelper::make()->getUserType(),
+                'inventory_id'  => AuthHelper::make()->getUserTypeId(),
+                'stock_id'      => $id,
+                'amount'        => $amount,
+            ]));
         });
 
         return $operationalizedInventories;
